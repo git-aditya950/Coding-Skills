@@ -9,332 +9,573 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body { 
+            background-color: #f3f4f6;
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
         .hidden { display: none !important; }
+        
+        /* Animations */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fade { animation: fadeIn 0.3s ease-out; }
+
+        .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+<body class="text-slate-800 min-h-screen flex flex-col font-sans overflow-hidden">
 
     <!-- ================= LOGIN SCREEN ================= -->
-    <div id="login-section" class="fixed inset-0 z-50 bg-slate-200 flex items-center justify-center">
-        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border-t-4 border-blue-700">
+    <div id="login-section" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-brand-900 via-slate-900 to-black animate-fade">
+        <!-- Decorative blobs -->
+        <div class="absolute top-0 left-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div class="glass-panel p-10 rounded-2xl shadow-2xl w-full max-w-md relative z-10 border-t-4 border-brand-500">
             <div class="text-center mb-8">
-                <div class="inline-block p-4 rounded-full bg-blue-50 mb-4">
-                    <i class="fa-solid fa-graduation-cap text-4xl text-blue-700"></i>
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-400 mb-4 shadow-lg text-white transform rotate-3">
+                    <i class="fa-solid fa-graduation-cap text-3xl"></i>
                 </div>
-                <h1 class="text-xl font-bold text-slate-800 uppercase tracking-wide">Student Record Management System</h1>
-                <p class="text-sm text-slate-500 font-medium mt-1">C Programming Project Simulation</p>
+                <h1 class="text-2xl font-bold text-slate-800 tracking-tight mt-2">Welcome Back</h1>
+                <p class="text-sm text-slate-500 mt-1">Student Record Management System</p>
             </div>
             
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Select Role</label>
+            <form id="login-form" class="space-y-5">
+                <div class="group">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Select Role</label>
                     <div class="relative">
-                        <i class="fa-solid fa-users absolute left-3 top-3 text-slate-400"></i>
-                        <select id="login-role" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none appearance-none" required>
-                            <option value="" disabled selected>-- Select User Role --</option>
-                            <option value="admin">ADMIN</option>
-                            <option value="staff">STAFF</option>
-                            <option value="guest">GUEST</option>
+                        <i class="fa-solid fa-users absolute left-4 top-3.5 text-slate-400 group-focus-within:text-brand-600 transition-colors"></i>
+                        <select id="login-role" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all appearance-none font-medium text-sm" required>
+                            <option value="" disabled selected>-- Select Access Level --</option>
+                            <option value="admin">Administrator</option>
+                            <option value="staff">Staff Member</option>
+                            <option value="guest">Guest User</option>
                         </select>
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 text-xs pointer-events-none"></i>
+                        <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-slate-400 text-xs pointer-events-none"></i>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Username</label>
+                <div class="group">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Username</label>
                     <div class="relative">
-                        <i class="fa-solid fa-user absolute left-3 top-3 text-slate-400"></i>
-                        <input type="text" id="login-user" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none" placeholder="Enter Username" required>
+                        <i class="fa-solid fa-user absolute left-4 top-3.5 text-slate-400 group-focus-within:text-brand-600 transition-colors"></i>
+                        <input type="text" id="login-user" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all font-medium text-sm placeholder:text-slate-400" placeholder="Enter your username" required>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Password</label>
+                
+                <div class="group">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 ml-1">Password</label>
                     <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3 top-3 text-slate-400"></i>
-                        <input type="password" id="login-pass" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none" placeholder="Enter Password" required>
+                        <i class="fa-solid fa-lock absolute left-4 top-3.5 text-slate-400 group-focus-within:text-brand-600 transition-colors"></i>
+                        <input type="password" id="login-pass" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all font-medium text-sm placeholder:text-slate-400" placeholder="Enter your password" required>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg shadow transition-all mt-2">
-                    LOGIN
+
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-700 to-brand-500 hover:from-brand-800 hover:to-brand-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-brand-500/30 transition-all transform active:scale-[0.98] mt-4 flex items-center justify-center gap-2">
+                    <span>Login to Dashboard</span>
+                    <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
             
-            <div class="mt-6 text-center text-xs text-slate-400 bg-slate-50 p-2 rounded">
-                <p class="font-bold mb-1">Default Credentials (Stored in File):</p>
-                <p>Role: <b>Admin</b> | User: admin | Pass: admin123</p>
-                <p>Role: <b>Staff</b> | User: staff | Pass: staff123</p>
-                <p>Role: <b>Guest</b> | User: guest | Pass: guest</p>
+            <div id="login-msg" class="mt-6 hidden p-3 bg-red-50 text-red-600 text-xs font-medium text-center rounded-lg border border-red-100 flex items-center justify-center gap-2 animate-pulse">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="login-msg-text"></span>
             </div>
-            <div id="login-msg" class="mt-4 hidden p-2 bg-red-100 text-red-700 text-xs text-center rounded border border-red-200"></div>
+
+            <!-- Credentials Hint -->
+            <div class="mt-8 pt-6 border-t border-slate-100">
+                <p class="text-center text-xs font-bold text-slate-400 mb-3 uppercase tracking-wide">Demo Credentials</p>
+                <div class="flex justify-center gap-2 text-[10px] text-slate-500 font-mono">
+                    <span class="bg-slate-100 px-2 py-1 rounded border border-slate-200">admin/admin123</span>
+                    <span class="bg-slate-100 px-2 py-1 rounded border border-slate-200">staff/staff123</span>
+                    <span class="bg-slate-100 px-2 py-1 rounded border border-slate-200">guest/guest</span>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <button onclick="hardReset()" class="text-[10px] text-slate-400 hover:text-red-500 transition-colors underline decoration-dotted">Reset System Data</button>
+            </div>
         </div>
     </div>
 
     <!-- ================= MAIN DASHBOARD ================= -->
-    <div id="dashboard-section" class="hidden flex flex-col h-screen">
+    <div id="dashboard-section" class="hidden flex flex-col h-screen animate-fade bg-slate-50">
         
-        <!-- Header -->
-        <nav class="bg-blue-800 text-white shadow-md">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-book-open text-xl"></i>
-                        <div>
-                            <span class="font-bold text-lg tracking-tight block">SRMS</span>
-                            <span class="text-[10px] text-blue-200 uppercase tracking-wider">Student Record Management System</span>
+        <!-- Top Navbar -->
+        <nav class="bg-white border-b border-slate-200 h-16 z-30 flex-shrink-0">
+            <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-full">
+                <div class="flex items-center justify-between h-full">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-gradient-to-tr from-brand-600 to-brand-400 text-white p-2 rounded-lg shadow-sm">
+                            <i class="fa-solid fa-database text-lg"></i>
+                        </div>
+                        <div class="hidden md:block">
+                            <span class="font-bold text-lg tracking-tight text-slate-800 leading-none block">SRMS <span class="text-brand-600">Pro</span></span>
+                            <span class="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Academic Records v2.0</span>
                         </div>
                     </div>
+                    
                     <div class="flex items-center gap-4">
-                        <div class="bg-blue-900/50 px-3 py-1 rounded text-xs font-mono border border-blue-700">
-                            Role: <span id="current-role-display" class="font-bold uppercase text-yellow-300">ADMIN</span>
+                        <div class="flex flex-col items-end mr-2">
+                            <span class="text-xs font-bold text-slate-700">Logged in as</span>
+                            <span id="current-role-display" class="text-[10px] font-bold uppercase text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full border border-brand-100">ADMIN</span>
                         </div>
-                        <button onclick="auth.logout()" class="text-blue-100 hover:text-white transition-colors text-sm font-medium">
-                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                        <div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+                        <button onclick="auth.logout()" class="group flex items-center gap-2 text-slate-500 hover:text-red-600 transition-colors text-sm font-medium">
+                            <span class="hidden md:inline group-hover:underline decoration-2 underline-offset-4">Logout</span>
+                            <div class="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-red-50 flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-power-off text-xs"></i>
+                            </div>
                         </button>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
-            
-            <!-- LEFT SIDEBAR: MENU -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden sticky top-8">
-                    <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
-                        <h2 class="font-bold text-slate-700 text-sm uppercase">Menu Options</h2>
+        <div class="flex flex-grow overflow-hidden">
+            <!-- LEFT SIDEBAR -->
+            <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 transition-all duration-300">
+                <div class="p-6">
+                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Main Menu</h2>
+                    <div class="space-y-2" id="menu-container">
+                        <!-- Injected JS Buttons -->
                     </div>
-                    <div class="p-2 space-y-1" id="menu-container">
-                        <!-- Menus injected via JS based on Role -->
-                    </div>
-                    
-                    <!-- Static Menu Item for Project Info -->
-                    <div class="p-2 border-t border-slate-100">
-                        <button onclick="ui.showSection('info')" class="w-full text-left px-4 py-2 rounded hover:bg-blue-50 text-slate-600 hover:text-blue-700 text-sm font-medium transition-colors flex items-center gap-2">
-                            <i class="fa-solid fa-circle-info w-5"></i> Project Info
+                </div>
+                
+                <div class="mt-auto p-6 border-t border-slate-800">
+                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">System</h2>
+                    <div class="space-y-2">
+                        <button onclick="ui.showSection('logs')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white text-sm font-medium transition-all flex items-center gap-3 group">
+                            <i class="fa-solid fa-terminal w-5 text-slate-500 group-hover:text-green-400 transition-colors"></i> 
+                            <span>View Logs</span>
+                        </button>
+                        <button onclick="ui.showSection('info')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white text-sm font-medium transition-all flex items-center gap-3 group">
+                            <i class="fa-solid fa-circle-info w-5 text-slate-500 group-hover:text-blue-400 transition-colors"></i> 
+                            <span>Documentation</span>
                         </button>
                     </div>
                 </div>
-            </div>
+            </aside>
 
             <!-- RIGHT CONTENT AREA -->
-            <div class="lg:col-span-3">
+            <main class="flex-grow overflow-y-auto p-8 relative">
                 
-                <!-- 1. VIEW STUDENTS SECTION (Default) -->
-                <div id="sec-view" class="content-sec bg-white rounded-lg shadow border border-slate-200 min-h-[500px] flex flex-col">
-                    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-                        <h3 class="font-bold text-slate-700">Display All Students</h3>
-                        <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500">Total Records: <span id="total-count">0</span></span>
+                <!-- 0. DASHBOARD ANALYTICS -->
+                <div id="sec-dashboard" class="content-sec hidden animate-slide-up max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Dashboard Overview</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- Stat Card 1 -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover-lift relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                            <div class="relative z-10 flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-blue-500/30">
+                                    <i class="fa-solid fa-users"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Students</p>
+                                    <p id="stat-total-students" class="text-3xl font-bold text-slate-800 mt-1">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stat Card 2 -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover-lift relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                            <div class="relative z-10 flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-emerald-500/30">
+                                    <i class="fa-solid fa-chart-pie"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Avg Marks</p>
+                                    <p id="stat-avg-marks" class="text-3xl font-bold text-slate-800 mt-1">0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stat Card 3 -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover-lift relative overflow-hidden group">
+                            <div class="absolute right-0 top-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                            <div class="relative z-10 flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-purple-500/30">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pass Rate</p>
+                                    <p id="stat-pass-perc" class="text-3xl font-bold text-slate-800 mt-1">0%</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="overflow-x-auto flex-grow">
-                        <table class="w-full text-sm text-left">
-                            <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase border-b border-slate-200">
-                                <tr>
-                                    <th class="px-6 py-3">Roll No</th>
-                                    <th class="px-6 py-3">Name</th>
-                                    <th class="px-6 py-3 text-center">Branch</th>
-                                    <th class="px-6 py-3 text-center">Marks</th>
-                                    <th class="px-6 py-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="student-table-body" class="divide-y divide-slate-100">
-                                <!-- Rows -->
-                            </tbody>
-                        </table>
-                        <div id="empty-state" class="hidden flex flex-col items-center justify-center h-64 text-slate-400">
-                            <i class="fa-solid fa-folder-open text-3xl mb-2 opacity-50"></i>
-                            <p>No student records found in file.</p>
+                    
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 hover-lift">
+                        <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2 text-lg">
+                            <i class="fa-solid fa-medal text-yellow-500 text-xl"></i> Top Performer
+                        </h3>
+                        <div id="top-performer-card" class="bg-gradient-to-r from-slate-50 to-white p-6 rounded-xl border border-slate-200 border-l-4 border-l-yellow-400">
+                            <!-- Injected JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1. VIEW STUDENTS SECTION -->
+                <div id="sec-view" class="content-sec hidden animate-slide-up max-w-6xl mx-auto">
+                    <div class="flex justify-between items-end mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-800">Student Database</h2>
+                            <p class="text-slate-500 text-sm mt-1">Manage and view all registered student records.</p>
+                        </div>
+                        <button onclick="system.exportData()" class="group flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-4 py-2 rounded-lg hover:border-brand-500 hover:text-brand-600 transition-all shadow-sm">
+                            <i class="fa-solid fa-file-csv group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-bold">Export CSV</span>
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase border-b border-slate-200">
+                                    <tr>
+                                        <th class="px-6 py-4">Roll No</th>
+                                        <th class="px-6 py-4">Student Name</th>
+                                        <th class="px-6 py-4 text-center">Branch & Sec</th>
+                                        <th class="px-6 py-4 text-center">Marks</th>
+                                        <th class="px-6 py-4 text-center">Grade</th>
+                                        <th class="px-6 py-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-table-body" class="divide-y divide-slate-100">
+                                    <!-- Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Empty State -->
+                        <div id="empty-state" class="hidden flex flex-col items-center justify-center h-80 text-slate-400">
+                            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                <i class="fa-regular fa-folder-open text-3xl opacity-50"></i>
+                            </div>
+                            <p class="font-medium">No records found in database.</p>
+                            <p class="text-xs mt-1">Add a new student to get started.</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. ADD STUDENT SECTION -->
-                <div id="sec-add" class="content-sec hidden bg-white rounded-lg shadow border border-slate-200">
-                    <div class="px-6 py-4 border-b border-slate-200">
-                        <h3 class="font-bold text-slate-700">Add New Student</h3>
-                    </div>
-                    <div class="p-8 max-w-lg mx-auto">
-                        <form id="add-form" class="space-y-4">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Roll Number</label>
-                                    <input type="text" id="add-roll" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                <div id="sec-add" class="content-sec hidden animate-slide-up max-w-2xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+                            <h2 class="text-xl font-bold text-slate-800">Add New Record</h2>
+                            <p class="text-slate-500 text-sm mt-1">Create a new student entry in the system.</p>
+                        </div>
+                        
+                        <div class="p-8">
+                            <form id="add-form" class="space-y-6">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="space-y-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Roll Number</label>
+                                        <input type="text" id="add-roll" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all font-mono text-sm" placeholder="e.g. AP211..." required>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Branch</label>
+                                        <input type="text" id="add-branch" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="e.g. CSE" required>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Branch</label>
-                                    <input type="text" id="add-branch" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" placeholder="e.g. CSE">
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Full Name</label>
+                                    <input type="text" id="add-name" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="Enter student name" required>
                                 </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Student Name</label>
-                                <input type="text" id="add-name" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Section</label>
-                                <input type="text" id="add-sec" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" placeholder="e.g. 'O'">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Total Marks</label>
-                                <input type="number" id="add-marks" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-                            </div>
-                            <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 rounded shadow mt-4">Save Record</button>
-                        </form>
-                        <div id="add-msg" class="mt-4 hidden p-2 text-center text-xs rounded font-bold"></div>
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="space-y-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Section</label>
+                                        <input type="text" id="add-sec" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="e.g. A" required>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Marks</label>
+                                        <input type="number" id="add-marks" min="0" max="100" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all text-sm" placeholder="0-100" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="pt-4">
+                                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-brand-500/20 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-plus"></i> Save Record
+                                    </button>
+                                </div>
+                            </form>
+                            <div id="add-msg" class="mt-6 hidden p-4 text-center text-sm font-medium rounded-xl border"></div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 3. SEARCH SECTION -->
-                <div id="sec-search" class="content-sec hidden bg-white rounded-lg shadow border border-slate-200">
-                    <div class="px-6 py-4 border-b border-slate-200">
-                        <h3 class="font-bold text-slate-700">Search Student</h3>
+                <div id="sec-search" class="content-sec hidden animate-slide-up max-w-4xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-slate-800">Search Records</h2>
+                        <p class="text-slate-500 text-sm mt-1">Find students by Roll Number or Name</p>
                     </div>
-                    <div class="p-6">
-                        <div class="flex gap-2 mb-6">
-                            <input type="text" id="search-input" class="flex-grow px-4 py-2 border rounded focus:outline-none focus:border-blue-500" placeholder="Enter Roll Number to Search...">
-                            <button onclick="system.search()" class="bg-slate-800 text-white px-6 py-2 rounded font-medium hover:bg-slate-900">Search</button>
+
+                    <div class="bg-white p-2 rounded-2xl shadow-lg border border-slate-100 flex items-center mb-8 max-w-2xl mx-auto">
+                        <i class="fa-solid fa-magnifying-glass text-slate-400 ml-4 text-lg"></i>
+                        <input type="text" id="search-input" class="flex-grow px-4 py-3 text-lg outline-none text-slate-700 placeholder:text-slate-400 bg-transparent" placeholder="Type keywords here...">
+                        <button onclick="system.search()" class="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-colors">Search</button>
+                    </div>
+
+                    <div id="search-results" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase border-b border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-4">Roll No</th>
+                                    <th class="px-6 py-4">Name</th>
+                                    <th class="px-6 py-4">Academic Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="search-table-body" class="divide-y divide-slate-100 bg-white">
+                                <!-- Results -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="search-msg" class="hidden text-center py-12">
+                        <div class="inline-block p-4 rounded-full bg-slate-100 text-slate-400 mb-3">
+                            <i class="fa-solid fa-magnifying-glass text-xl"></i>
                         </div>
-                        <div id="search-results" class="hidden border rounded overflow-hidden">
-                            <table class="w-full text-sm text-left">
-                                <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase">
-                                    <tr>
-                                        <th class="px-6 py-3">Roll No</th>
-                                        <th class="px-6 py-3">Name</th>
-                                        <th class="px-6 py-3">Details</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="search-table-body" class="bg-white">
-                                    <!-- Results -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="search-msg" class="hidden text-center text-slate-500 py-8">No records found.</div>
+                        <p class="text-slate-500 font-medium">No records found matching your query.</p>
                     </div>
                 </div>
 
                 <!-- 4. CHANGE PASSWORD SECTION -->
-                <div id="sec-password" class="content-sec hidden bg-white rounded-lg shadow border border-slate-200">
-                    <div class="px-6 py-4 border-b border-slate-200">
-                        <h3 class="font-bold text-slate-700">Change Password</h3>
-                    </div>
-                    <div class="p-8 max-w-md mx-auto">
-                        <form id="pwd-form" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Old Password</label>
-                                <input type="password" id="old-pass" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">New Password</label>
-                                <input type="password" id="new-pass" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-                            </div>
-                            <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded shadow mt-2">Update Password</button>
-                        </form>
-                        <div id="pwd-msg" class="mt-4 hidden p-2 text-center text-xs rounded font-bold"></div>
-                    </div>
-                </div>
-
-                <!-- 5. PROJECT INFO SECTION (New) -->
-                <div id="sec-info" class="content-sec hidden bg-white rounded-lg shadow border border-slate-200">
-                    <div class="px-6 py-4 border-b border-slate-200 bg-slate-50">
-                        <h3 class="font-bold text-slate-700">Project Documentation</h3>
-                    </div>
-                    <div class="p-8 space-y-6 overflow-y-auto max-h-[500px]">
-                        <div>
-                            <h4 class="text-blue-700 font-bold text-lg mb-2">Project Overview</h4>
-                            <p class="text-sm text-slate-600 leading-relaxed">
-                                The Student Record Management System (SRMS) is a console-based application conceptualized in C language for managing student academic records efficiently. It allows authorized users (Admin, Staff, Guest) to manage student data using file handling and role-based access control (RBAC).
-                            </p>
+                <div id="sec-password" class="content-sec hidden animate-slide-up max-w-lg mx-auto">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+                            <h2 class="text-xl font-bold text-slate-800">Security</h2>
+                            <p class="text-slate-500 text-sm mt-1">Update your account password.</p>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                                <h4 class="text-blue-800 font-bold text-sm mb-2 uppercase"><i class="fa-solid fa-list-check mr-2"></i> Key Features</h4>
-                                <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
-                                    <li><b>Role-Based Login:</b> Secure access for Admin, Staff, and Guest.</li>
-                                    <li><b>File-Based Storage:</b> Persistent data storage in <code>students.txt</code>.</li>
-                                    <li><b>CRUD Operations:</b> Create, Read, Update, Delete records.</li>
-                                    <li><b>Secure Updates:</b> Uses temporary files for data integrity during updates.</li>
-                                </ul>
-                            </div>
-                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                                <h4 class="text-slate-800 font-bold text-sm mb-2 uppercase"><i class="fa-solid fa-code mr-2"></i> Technologies Used</h4>
-                                <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
-                                    <li><b>Language:</b> C Programming</li>
-                                    <li><b>Concepts:</b> File Handling (fopen, fprintf), Structures, Pointers</li>
-                                    <li><b>Logic:</b> Procedural Programming, Authentication Logic</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div>
-                            <h4 class="text-slate-800 font-bold text-sm mb-2 uppercase">System Workflow</h4>
-                            <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded border border-slate-200 font-mono">
-                                1. Login (credentials.txt) -> Validate Role<br>
-                                2. Admin Menu -> Add/Edit/Delete/Search/View<br>
-                                3. Staff Menu -> Add/Edit/Search/View<br>
-                                4. Guest Menu -> Search/View<br>
-                                5. Data Operations -> Modify students.txt
-                            </div>
+                        <div class="p-8">
+                            <form id="pwd-form" class="space-y-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Current Password</label>
+                                    <input type="password" id="old-pass" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none transition-all text-sm" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">New Password</label>
+                                    <input type="password" id="new-pass" class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none transition-all text-sm" required>
+                                </div>
+                                <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-3.5 rounded-xl shadow mt-4 transition-all">Update Credentials</button>
+                            </form>
+                            <div id="pwd-msg" class="mt-6 hidden p-4 text-center text-sm font-medium rounded-xl border"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 6. EDIT MODAL -->
-                <div id="edit-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-                    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
-                        <h3 class="font-bold text-slate-800 mb-4">Update Student Details</h3>
-                        <form id="edit-form" class="space-y-3">
+                <!-- 5. PROJECT INFO -->
+                <div id="sec-info" class="content-sec hidden animate-slide-up max-w-4xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="h-32 bg-gradient-to-r from-brand-900 to-brand-700 relative flex items-center px-8">
+                            <div class="absolute right-0 bottom-0 opacity-10 text-9xl text-white transform translate-y-4">
+                                <i class="fa-brands fa-cuttlefish"></i>
+                            </div>
+                            <div class="relative z-10 text-white">
+                                <h2 class="text-3xl font-bold">SRMS Project Report</h2>
+                                <p class="text-brand-100 text-sm mt-1">Console-based Application Simulation</p>
+                            </div>
+                        </div>
+                        <div class="p-8 space-y-8">
+                            <div>
+                                <h4 class="text-slate-800 font-bold text-lg mb-3 flex items-center gap-2">
+                                    <span class="w-1 h-6 bg-brand-500 rounded-full"></span> Project Overview
+                                </h4>
+                                <p class="text-slate-600 leading-relaxed text-sm bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                    The Student Record Management System (SRMS) is a comprehensive console-based application conceptualized in C language. It serves as a digital solution to replace manual record-keeping, demonstrating efficient file handling, procedural programming, and role-based access control (RBAC) in a real-world educational scenario.
+                                </p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Key Features</h5>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:border-brand-200 transition-colors">
+                                            <div class="w-8 h-8 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 text-xs"><i class="fa-solid fa-lock"></i></div>
+                                            <div>
+                                                <p class="text-sm font-bold text-slate-700">RBAC Security</p>
+                                                <p class="text-xs text-slate-500">Secure logins for Admin, Staff, Guest.</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:border-brand-200 transition-colors">
+                                            <div class="w-8 h-8 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 text-xs"><i class="fa-solid fa-hard-drive"></i></div>
+                                            <div>
+                                                <p class="text-sm font-bold text-slate-700">File Persistence</p>
+                                                <p class="text-xs text-slate-500">Data stored permanently in text files.</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Tech Stack (Simulation)</h5>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:border-brand-200 transition-colors">
+                                            <div class="w-8 h-8 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 text-xs"><i class="fa-solid fa-code"></i></div>
+                                            <div>
+                                                <p class="text-sm font-bold text-slate-700">C Language</p>
+                                                <p class="text-xs text-slate-500">Logic implemented via procedural code.</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 hover:border-brand-200 transition-colors">
+                                            <div class="w-8 h-8 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 text-xs"><i class="fa-solid fa-file-code"></i></div>
+                                            <div>
+                                                <p class="text-sm font-bold text-slate-700">File I/O</p>
+                                                <p class="text-xs text-slate-500">fopen, fprintf, fscanf operations.</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. LOGS SECTION -->
+                <div id="sec-logs" class="content-sec hidden animate-slide-up max-w-5xl mx-auto h-[600px] flex flex-col bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-800">
+                    <div class="px-6 py-4 bg-slate-950 border-b border-slate-800 flex justify-between items-center">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <span class="ml-3 text-xs font-mono text-slate-400">system_logs.txt</span>
+                        </div>
+                        <button onclick="logger.clear()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition-colors border border-slate-700">Clear Terminal</button>
+                    </div>
+                    <div id="log-container" class="flex-grow overflow-y-auto p-6 font-mono text-xs space-y-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                        <!-- Logs injected here -->
+                    </div>
+                </div>
+
+                <!-- 7. EDIT MODAL -->
+                <div id="edit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-fade"></div>
+                    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm relative z-10 animate-slide-up">
+                        <h3 class="text-xl font-bold text-slate-800 mb-6">Edit Student</h3>
+                        <form id="edit-form" class="space-y-4">
                             <input type="hidden" id="edit-original-roll">
                             <div>
-                                <label class="text-xs font-bold text-slate-500">Roll No</label>
-                                <input type="text" id="edit-roll" class="w-full border rounded px-2 py-1 text-sm bg-slate-100" readonly>
+                                <label class="text-xs font-bold text-slate-500 uppercase mb-1">Roll No</label>
+                                <input type="text" id="edit-roll" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-500 cursor-not-allowed text-sm" readonly>
                             </div>
                             <div>
-                                <label class="text-xs font-bold text-slate-500">Name</label>
-                                <input type="text" id="edit-name" class="w-full border rounded px-2 py-1 text-sm">
+                                <label class="text-xs font-bold text-slate-500 uppercase mb-1">Name</label>
+                                <input type="text" id="edit-name" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm transition-all">
                             </div>
                             <div>
-                                <label class="text-xs font-bold text-slate-500">Branch</label>
-                                <input type="text" id="edit-branch" class="w-full border rounded px-2 py-1 text-sm">
+                                <label class="text-xs font-bold text-slate-500 uppercase mb-1">Branch</label>
+                                <input type="text" id="edit-branch" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm transition-all">
                             </div>
                             <div>
-                                <label class="text-xs font-bold text-slate-500">Marks</label>
-                                <input type="number" id="edit-marks" class="w-full border rounded px-2 py-1 text-sm">
+                                <label class="text-xs font-bold text-slate-500 uppercase mb-1">Marks</label>
+                                <input type="number" id="edit-marks" min="0" max="100" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm transition-all">
                             </div>
-                            <div class="flex gap-2 mt-4">
-                                <button type="button" onclick="ui.closeEditModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-1.5 rounded text-sm font-bold">Cancel</button>
-                                <button type="submit" class="flex-1 bg-blue-700 hover:bg-blue-800 text-white py-1.5 rounded text-sm font-bold">Update</button>
+                            <div class="flex gap-3 mt-6 pt-2">
+                                <button type="button" onclick="ui.closeEditModal()" class="flex-1 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 py-2.5 rounded-lg text-sm font-bold transition-colors">Cancel</button>
+                                <button type="submit" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-lg text-sm font-bold transition-colors shadow-lg shadow-brand-500/20">Save Changes</button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <!-- 7. DELETE MODAL -->
-                <div id="delete-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-                    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
-                        <div class="mb-4">
-                            <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500"></i>
+                <!-- 8. DELETE MODAL -->
+                <div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-fade"></div>
+                    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center relative z-10 animate-slide-up">
+                        <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-trash-can text-2xl"></i>
                         </div>
-                        <h3 class="font-bold text-slate-800 mb-2">Confirm Deletion</h3>
-                        <p class="text-sm text-slate-500 mb-6">Are you sure you want to permanently delete record <span id="delete-target-roll" class="font-bold"></span>?</p>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Delete Record?</h3>
+                        <p class="text-sm text-slate-500 mb-8 leading-relaxed">You are about to permanently delete <br><span id="delete-target-roll" class="font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded"></span>. This action is irreversible.</p>
                         <div class="flex gap-3 justify-center">
-                            <button onclick="ui.closeDeleteModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2 rounded text-sm font-bold">Cancel</button>
-                            <button onclick="ui.confirmDeleteAction()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded text-sm font-bold">Delete</button>
+                            <button onclick="ui.closeDeleteModal()" class="flex-1 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 py-2.5 rounded-lg text-sm font-bold transition-colors">Cancel</button>
+                            <button onclick="ui.confirmDeleteAction()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg text-sm font-bold transition-colors shadow-lg shadow-red-500/20">Delete</button>
                         </div>
                     </div>
                 </div>
 
-            </div>
-        </main>
-        
-        <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
-            <div class="text-center text-xs text-slate-400">
-                &copy; 2025 SRM University AP - Student Record Management System
-            </div>
-        </footer>
+            </main>
+        </div>
     </div>
 
+    <!-- JS Logic remains identical but connected to new UI classes -->
     <script>
+        // ==========================================
+        //  GLOBAL UTILS & RESET
+        // ==========================================
+        
+        window.hardReset = () => {
+            if(confirm("Factory Reset: This will clear all data. Continue?")) {
+                localStorage.clear();
+                window.location.reload();
+            }
+        };
+
+        // ==========================================
+        //  0. LOGGER
+        // ==========================================
+        class Logger {
+            constructor() {
+                this.logs = JSON.parse(localStorage.getItem('srms_logs')) || [];
+            }
+            
+            log(action, user, detail) {
+                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+                const entry = { time: timestamp, user: user ? user.toUpperCase() : 'SYSTEM', action, detail };
+                this.logs.unshift(entry);
+                if(this.logs.length > 50) this.logs.pop();
+                localStorage.setItem('srms_logs', JSON.stringify(this.logs));
+            }
+
+            getLogs() { return this.logs; }
+
+            clear() {
+                this.logs = [];
+                localStorage.setItem('srms_logs', JSON.stringify([]));
+                ui.renderLogs();
+            }
+        }
+
         // ==========================================
         //  1. AUTHENTICATION
         // ==========================================
@@ -346,8 +587,10 @@
             }
 
             loadCredentials() {
-                const stored = localStorage.getItem('srms_creds');
-                if (stored) return JSON.parse(stored);
+                try {
+                    const stored = localStorage.getItem('srms_creds');
+                    if (stored) return JSON.parse(stored);
+                } catch (e) { console.error("Creds corrupted"); }
                 
                 const defaults = [
                     { user: 'admin', pass: 'admin123', role: 'admin' },
@@ -364,9 +607,10 @@
                     if (account.role === selectedRole) {
                         this.currentUser = account.user;
                         this.role = account.role;
+                        logger.log("LOGIN", this.currentUser, "Access granted.");
                         return { success: true };
                     } else {
-                        return { success: false, msg: `User '${user}' does not have ${selectedRole.toUpperCase()} privileges.` };
+                        return { success: false, msg: `User '${user}' is a ${account.role.toUpperCase()}.` };
                     }
                 }
                 return { success: false, msg: "Invalid Username or Password." };
@@ -377,12 +621,14 @@
                 if (index !== -1 && this.credentials[index].pass === oldPass) {
                     this.credentials[index].pass = newPass;
                     localStorage.setItem('srms_creds', JSON.stringify(this.credentials));
+                    logger.log("SECURITY", this.currentUser, "Password updated.");
                     return true;
                 }
                 return false;
             }
 
             logout() {
+                logger.log("LOGOUT", this.currentUser, "Session ended.");
                 this.currentUser = null;
                 this.role = null;
                 ui.showLogin();
@@ -398,21 +644,33 @@
             }
 
             loadStudents() {
-                const stored = localStorage.getItem('srms_students');
-                if (stored) return JSON.parse(stored);
-                return [
-                    { roll: 'AP24110010453', name: 'Pavan Varma', branch: 'CSE', sec: 'O', marks: 95 }
+                try {
+                    const stored = localStorage.getItem('srms_students');
+                    if (stored) {
+                        let data = JSON.parse(stored);
+                        if(data.length > 0 && data[0].marks === undefined) throw new Error();
+                        return data;
+                    }
+                } catch (e) {}
+                
+                const defaults = [
+                    { roll: 'AP24110010453', name: 'Pavan Varma', branch: 'CSE', sec: 'O', marks: 95 },
+                    { roll: 'AP24110010400', name: 'Rahul Sharma', branch: 'ECE', sec: 'A', marks: 82 }
                 ];
+                localStorage.setItem('srms_students', JSON.stringify(defaults));
+                return defaults;
             }
 
             save() {
                 localStorage.setItem('srms_students', JSON.stringify(this.students));
+                ui.updateStats();
             }
 
             add(roll, name, branch, sec, marks) {
                 if (this.students.some(s => s.roll === roll)) return false; 
-                this.students.push({ roll, name, branch, sec, marks });
+                this.students.push({ roll, name, branch, sec, marks: parseInt(marks) });
                 this.save();
+                logger.log("CREATE", auth.currentUser, `New Record: ${roll}`);
                 return true;
             }
 
@@ -420,6 +678,7 @@
                 const initialLen = this.students.length;
                 this.students = this.students.filter(s => s.roll !== roll);
                 this.save();
+                logger.log("DELETE", auth.currentUser, `Removed: ${roll}`);
                 return this.students.length < initialLen;
             }
 
@@ -428,8 +687,9 @@
                 if (student) {
                     student.name = name;
                     student.branch = branch;
-                    student.marks = marks;
+                    student.marks = parseInt(marks);
                     this.save();
+                    logger.log("UPDATE", auth.currentUser, `Modified: ${originalRoll}`);
                     return true;
                 }
                 return false;
@@ -441,6 +701,29 @@
                     s.roll.toLowerCase().includes(query) || 
                     s.name.toLowerCase().includes(query)
                 );
+            }
+
+            calculateGrade(marks) {
+                if (marks >= 90) return 'O';
+                if (marks >= 80) return 'A+';
+                if (marks >= 70) return 'A';
+                if (marks >= 60) return 'B+';
+                if (marks >= 50) return 'B';
+                return 'F';
+            }
+
+            exportData() {
+                let csvContent = "data:text/csv;charset=utf-8,Roll Number,Name,Branch,Section,Marks,Grade\n";
+                this.students.forEach(s => {
+                    csvContent += `${s.roll},${s.name},${s.branch},${s.sec},${s.marks},${this.calculateGrade(s.marks)}\n`;
+                });
+                const link = document.createElement("a");
+                link.setAttribute("href", encodeURI(csvContent));
+                link.setAttribute("download", "student_records.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                logger.log("EXPORT", auth.currentUser, "Data exported to CSV.");
             }
         }
 
@@ -459,6 +742,7 @@
                 this.loginSection.classList.remove('hidden');
                 this.dashboardSection.classList.add('hidden');
                 document.getElementById('login-form').reset();
+                document.getElementById('login-msg').classList.add('hidden');
             }
 
             showDashboard(role) {
@@ -466,30 +750,34 @@
                 this.dashboardSection.classList.remove('hidden');
                 document.getElementById('current-role-display').textContent = role;
                 this.generateMenu(role);
-                this.showSection('view');
+                
+                if(role === 'guest') this.showSection('view');
+                else this.showSection('dashboard');
+                
+                this.updateStats();
             }
 
             generateMenu(role) {
                 let menuHTML = '';
-                const btnClass = "w-full text-left px-4 py-2 rounded hover:bg-blue-50 text-slate-600 hover:text-blue-700 text-sm font-medium transition-colors flex items-center gap-2";
+                const baseClass = "w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white text-sm font-medium transition-all flex items-center gap-3 group";
+                const iconBase = "w-5 text-slate-500 group-hover:text-brand-400 transition-colors";
 
-                // Admin: ALL Permissions
                 if (role === 'admin') {
-                    menuHTML += `<button onclick="ui.showSection('add')" class="${btnClass}"><i class="fa-solid fa-user-plus w-5"></i> Add Student</button>`;
-                    menuHTML += `<button onclick="ui.showSection('view')" class="${btnClass}"><i class="fa-solid fa-list w-5"></i> Display Students</button>`;
-                    menuHTML += `<button onclick="ui.showSection('search')" class="${btnClass}"><i class="fa-solid fa-magnifying-glass w-5"></i> Search Student</button>`;
-                    menuHTML += `<button onclick="ui.showSection('password')" class="${btnClass}"><i class="fa-solid fa-key w-5"></i> Change Password</button>`;
+                    menuHTML += `<button onclick="ui.showSection('dashboard')" class="${baseClass}"><i class="fa-solid fa-gauge-high ${iconBase}"></i> Dashboard</button>`;
+                    menuHTML += `<button onclick="ui.showSection('add')" class="${baseClass}"><i class="fa-solid fa-user-plus ${iconBase}"></i> Add Student</button>`;
+                    menuHTML += `<button onclick="ui.showSection('view')" class="${baseClass}"><i class="fa-solid fa-list-check ${iconBase}"></i> Records</button>`;
+                    menuHTML += `<button onclick="ui.showSection('search')" class="${baseClass}"><i class="fa-solid fa-magnifying-glass ${iconBase}"></i> Search</button>`;
+                    menuHTML += `<button onclick="ui.showSection('password')" class="${baseClass}"><i class="fa-solid fa-key ${iconBase}"></i> Security</button>`;
                 }
-                // Staff: Add, Display, Search, Update (Removed 'Delete', 'Password' kept as utility)
                 else if (role === 'staff') {
-                    menuHTML += `<button onclick="ui.showSection('add')" class="${btnClass}"><i class="fa-solid fa-user-plus w-5"></i> Add Student</button>`;
-                    menuHTML += `<button onclick="ui.showSection('view')" class="${btnClass}"><i class="fa-solid fa-list w-5"></i> Display Students</button>`;
-                    menuHTML += `<button onclick="ui.showSection('search')" class="${btnClass}"><i class="fa-solid fa-magnifying-glass w-5"></i> Search Student</button>`;
+                    menuHTML += `<button onclick="ui.showSection('dashboard')" class="${baseClass}"><i class="fa-solid fa-gauge-high ${iconBase}"></i> Dashboard</button>`;
+                    menuHTML += `<button onclick="ui.showSection('add')" class="${baseClass}"><i class="fa-solid fa-user-plus ${iconBase}"></i> Add Student</button>`;
+                    menuHTML += `<button onclick="ui.showSection('view')" class="${baseClass}"><i class="fa-solid fa-list-check ${iconBase}"></i> Records</button>`;
+                    menuHTML += `<button onclick="ui.showSection('search')" class="${baseClass}"><i class="fa-solid fa-magnifying-glass ${iconBase}"></i> Search</button>`;
                 }
-                // Guest: Display, Search
                 else if (role === 'guest') {
-                    menuHTML += `<button onclick="ui.showSection('view')" class="${btnClass}"><i class="fa-solid fa-list w-5"></i> Display Students</button>`;
-                    menuHTML += `<button onclick="ui.showSection('search')" class="${btnClass}"><i class="fa-solid fa-magnifying-glass w-5"></i> Search Student</button>`;
+                    menuHTML += `<button onclick="ui.showSection('view')" class="${baseClass}"><i class="fa-solid fa-list-check ${iconBase}"></i> Records</button>`;
+                    menuHTML += `<button onclick="ui.showSection('search')" class="${baseClass}"><i class="fa-solid fa-magnifying-glass ${iconBase}"></i> Search</button>`;
                 }
                 this.menuContainer.innerHTML = menuHTML;
             }
@@ -500,14 +788,70 @@
                 if(sec) {
                     sec.classList.remove('hidden');
                     if (secId === 'view') this.renderTable();
+                    if (secId === 'logs') this.renderLogs();
                 }
+            }
+
+            updateStats() {
+                const students = system.students;
+                const total = students.length;
+                let totalMarks = 0;
+                let passCount = 0;
+                let topStudent = null;
+
+                students.forEach(s => {
+                    const m = s.marks || 0;
+                    totalMarks += m;
+                    if(m >= 50) passCount++;
+                    if(!topStudent || m > topStudent.marks) topStudent = s;
+                });
+
+                document.getElementById('stat-total-students').textContent = total;
+                document.getElementById('stat-avg-marks').textContent = total > 0 ? (totalMarks / total).toFixed(1) : 0;
+                document.getElementById('stat-pass-perc').textContent = total > 0 ? ((passCount / total) * 100).toFixed(0) + '%' : '0%';
+
+                const topCard = document.getElementById('top-performer-card');
+                if(topStudent) {
+                    topCard.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold border border-yellow-200 text-lg shadow-sm">
+                                ${topStudent.name.charAt(0)}
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800 text-base">${topStudent.name}</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">${topStudent.branch}</span>
+                                    <span class="text-xs font-bold text-brand-600">${topStudent.marks} Marks</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    topCard.innerHTML = '<p class="text-slate-400 italic text-sm">Not enough data available.</p>';
+                }
+            }
+
+            renderLogs() {
+                const container = document.getElementById('log-container');
+                const logs = logger.getLogs();
+                if(logs.length === 0) {
+                    container.innerHTML = '<p class="text-slate-600 italic text-center py-4">Terminal is empty.</p>';
+                    return;
+                }
+                container.innerHTML = logs.map(l => `
+                    <div class="flex gap-3 text-slate-400 font-mono hover:text-slate-200 transition-colors py-0.5 border-b border-slate-800/50">
+                        <span class="text-slate-600 w-20 shrink-0">${l.time}</span>
+                        <span class="text-brand-400 w-16 shrink-0 font-bold">[${l.user}]</span>
+                        <span class="text-emerald-400 w-20 shrink-0 font-bold">${l.action}</span>
+                        <span>${l.detail}</span>
+                    </div>
+                `).join('');
             }
 
             renderTable() {
                 const tbody = document.getElementById('student-table-body');
                 tbody.innerHTML = '';
-                document.getElementById('total-count').textContent = system.students.length;
-
+                
                 if (system.students.length === 0) {
                     document.getElementById('empty-state').classList.remove('hidden');
                     return;
@@ -516,31 +860,39 @@
 
                 system.students.forEach(s => {
                     let actions = '';
-                    // Admin: Edit & Delete
+                    const grade = system.calculateGrade(s.marks);
+                    
+                    let gradeColor = 'bg-slate-100 text-slate-600';
+                    if (grade === 'O') gradeColor = 'bg-emerald-100 text-emerald-700 border border-emerald-200';
+                    else if (grade === 'A+' || grade === 'A') gradeColor = 'bg-blue-100 text-blue-700 border border-blue-200';
+                    else if (grade === 'F') gradeColor = 'bg-red-100 text-red-700 border border-red-200';
+                    else gradeColor = 'bg-yellow-50 text-yellow-700 border border-yellow-200';
+
+                    let gradeBadge = `<span class="px-2.5 py-1 rounded-md text-xs font-bold ${gradeColor}">${grade}</span>`;
+
                     if (auth.role === 'admin') {
                         actions = `
-                            <button onclick="ui.openEditModal('${s.roll}')" class="text-blue-600 hover:text-blue-800 mx-1" title="Update"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="ui.openDeleteModal('${s.roll}')" class="text-red-600 hover:text-red-800 mx-1" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="ui.openEditModal('${s.roll}')" class="text-blue-600 hover:text-blue-800 mx-1 p-2 hover:bg-blue-50 rounded-lg transition-all" title="Update"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="ui.openDeleteModal('${s.roll}')" class="text-red-500 hover:text-red-700 mx-1 p-2 hover:bg-red-50 rounded-lg transition-all" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
                         `;
                     } 
-                    // Staff: Edit Only
                     else if (auth.role === 'staff') {
                         actions = `
-                            <button onclick="ui.openEditModal('${s.roll}')" class="text-blue-600 hover:text-blue-800 mx-1" title="Update"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="ui.openEditModal('${s.roll}')" class="text-blue-600 hover:text-blue-800 mx-1 p-2 hover:bg-blue-50 rounded-lg transition-all" title="Update"><i class="fa-solid fa-pen"></i></button>
                         `;
                     }
-                    // Guest: Read Only
                     else {
-                        actions = '<span class="text-slate-400 text-xs italic">View Only</span>';
+                        actions = '<span class="text-slate-400 text-xs italic bg-slate-50 px-2 py-1 rounded">Read Only</span>';
                     }
 
                     const row = `
-                        <tr class="hover:bg-slate-50 border-b border-slate-50 last:border-none">
-                            <td class="px-6 py-3 font-mono text-xs font-bold text-slate-600">${s.roll}</td>
-                            <td class="px-6 py-3 font-medium text-slate-800">${s.name}</td>
-                            <td class="px-6 py-3 text-center text-xs bg-slate-50">${s.branch} (${s.sec})</td>
-                            <td class="px-6 py-3 text-center font-bold text-slate-700">${s.marks}</td>
-                            <td class="px-6 py-3 text-right">${actions}</td>
+                        <tr class="hover:bg-slate-50 border-b border-slate-50 last:border-none transition-colors group">
+                            <td class="px-6 py-4 font-mono text-xs font-bold text-slate-500 group-hover:text-brand-600 transition-colors">${s.roll}</td>
+                            <td class="px-6 py-4 font-bold text-slate-700">${s.name}</td>
+                            <td class="px-6 py-4 text-center text-xs text-slate-500">${s.branch} (${s.sec})</td>
+                            <td class="px-6 py-4 text-center font-bold text-slate-700 font-mono">${s.marks}</td>
+                            <td class="px-6 py-4 text-center">${gradeBadge}</td>
+                            <td class="px-6 py-4 text-right">${actions}</td>
                         </tr>
                     `;
                     tbody.insertAdjacentHTML('beforeend', row);
@@ -594,11 +946,17 @@
                     msg.classList.add('hidden');
                     tableContainer.classList.remove('hidden');
                     results.forEach(s => {
+                        const grade = system.calculateGrade(s.marks);
                         tbody.insertAdjacentHTML('beforeend', `
-                            <tr class="border-b last:border-none">
-                                <td class="px-6 py-3 font-mono text-xs font-bold">${s.roll}</td>
-                                <td class="px-6 py-3 font-bold">${s.name}</td>
-                                <td class="px-6 py-3 text-xs text-slate-500">Branch: ${s.branch} | Sec: ${s.sec} | Marks: ${s.marks}</td>
+                            <tr class="border-b last:border-none hover:bg-slate-50">
+                                <td class="px-6 py-4 font-mono text-xs font-bold text-slate-500">${s.roll}</td>
+                                <td class="px-6 py-4 font-bold text-slate-800">${s.name}</td>
+                                <td class="px-6 py-4 text-sm text-slate-500">
+                                    <div class="flex flex-col">
+                                        <span class="font-bold text-slate-700">${s.branch} - Sec ${s.sec}</span>
+                                        <span class="text-xs">Marks: ${s.marks} (Grade: ${grade})</span>
+                                    </div>
+                                </td>
                             </tr>
                         `);
                     });
@@ -606,19 +964,25 @@
             }
         }
 
+        // ==========================================
+        //  INIT
+        // ==========================================
+        const logger = new Logger();
         const auth = new Auth();
         const system = new StudentSystem();
         const ui = new UI();
 
+        // Event Listeners
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const role = document.getElementById('login-role').value;
             const u = document.getElementById('login-user').value.trim();
             const p = document.getElementById('login-pass').value.trim();
             const msg = document.getElementById('login-msg');
+            const msgText = document.getElementById('login-msg-text');
             
             if(!role) {
-                msg.textContent = "Please select a User Role.";
+                msgText.textContent = "Please select a User Role.";
                 msg.classList.remove('hidden');
                 return;
             }
@@ -629,7 +993,7 @@
                 msg.classList.add('hidden');
                 ui.showDashboard(auth.role);
             } else {
-                msg.textContent = result.msg;
+                msgText.textContent = result.msg;
                 msg.classList.remove('hidden');
             }
         });
@@ -644,13 +1008,14 @@
             const msg = document.getElementById('add-msg');
 
             if (system.add(roll, name, branch, sec, marks)) {
-                msg.textContent = "Record Added Successfully!";
-                msg.className = "mt-4 p-2 text-center text-xs rounded font-bold bg-blue-100 text-blue-700";
+                msg.textContent = "Success! Record added to database.";
+                msg.className = "mt-6 p-4 text-center text-sm font-medium rounded-xl border bg-emerald-50 text-emerald-600 border-emerald-100";
                 msg.classList.remove('hidden');
                 e.target.reset();
+                setTimeout(() => msg.classList.add('hidden'), 3000);
             } else {
                 msg.textContent = "Error: Roll Number already exists.";
-                msg.className = "mt-4 p-2 text-center text-xs rounded font-bold bg-red-100 text-red-700";
+                msg.className = "mt-6 p-4 text-center text-sm font-medium rounded-xl border bg-red-50 text-red-600 border-red-100";
                 msg.classList.remove('hidden');
             }
         });
@@ -681,13 +1046,13 @@
             const msg = document.getElementById('pwd-msg');
 
             if (auth.changePassword(oldP, newP)) {
-                msg.textContent = "Password Changed Successfully!";
-                msg.className = "mt-4 p-2 text-center text-xs rounded font-bold bg-blue-100 text-blue-700";
+                msg.textContent = "Password updated successfully.";
+                msg.className = "mt-6 p-4 text-center text-sm font-medium rounded-xl border bg-emerald-50 text-emerald-600 border-emerald-100";
                 msg.classList.remove('hidden');
                 e.target.reset();
             } else {
-                msg.textContent = "Error: Old password incorrect.";
-                msg.className = "mt-4 p-2 text-center text-xs rounded font-bold bg-red-100 text-red-700";
+                msg.textContent = "Authentication Failed: Old password incorrect.";
+                msg.className = "mt-6 p-4 text-center text-sm font-medium rounded-xl border bg-red-50 text-red-600 border-red-100";
                 msg.classList.remove('hidden');
             }
         });
