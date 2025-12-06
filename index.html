@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Record Management System (SRMS)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- ================= LOGIN SCREEN ================= -->
+    <div id="login-section" class="fixed inset-0 z-50 bg-slate-200 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border-t-4 border-blue-700">
+            <div class="text-center mb-8">
+                <div class="inline-block p-4 rounded-full bg-blue-50 mb-4">
+                    <i class="fa-solid fa-graduation-cap text-4xl text-blue-700"></i>
+                </div>
+                <h1 class="text-xl font-bold text-slate-800 uppercase tracking-wide">Student Record Management System</h1>
+                <p class="text-sm text-slate-500 font-medium mt-1">C Programming Project Simulation</p>
+            </div>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Select Role</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-users absolute left-3 top-3 text-slate-400"></i>
+                        <select id="login-role" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none appearance-none" required>
+                            <option value="" disabled selected>-- Select User Role --</option>
+                            <option value="admin">ADMIN</option>
+                            <option value="staff">STAFF</option>
+                            <option value="guest">GUEST</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-3 text-slate-400 text-xs pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Username</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3 top-3 text-slate-400"></i>
+                        <input type="text" id="login-user" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none" placeholder="Enter Username" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-3 top-3 text-slate-400"></i>
+                        <input type="password" id="login-pass" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-600 focus:outline-none" placeholder="Enter Password" required>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2.5 rounded-lg shadow transition-all mt-2">
+                    LOGIN
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-xs text-slate-400 bg-slate-50 p-2 rounded">
+                <p class="font-bold mb-1">Default Credentials (Stored in File):</p>
+                <p>Role: <b>Admin</b> | User: admin | Pass: admin123</p>
+                <p>Role: <b>Staff</b> | User: staff | Pass: staff123</p>
+                <p>Role: <b>Guest</b> | User: guest | Pass: guest</p>
+            </div>
+            <div id="login-msg" class="mt-4 hidden p-2 bg-red-100 text-red-700 text-xs text-center rounded border border-red-200"></div>
+        </div>
+    </div>
+
+    <!-- ================= MAIN DASHBOARD ================= -->
+    <div id="dashboard-section" class="hidden flex flex-col h-screen">
+        
+        <!-- Header -->
+        <nav class="bg-blue-800 text-white shadow-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-book-open text-xl"></i>
+                        <div>
+                            <span class="font-bold text-lg tracking-tight block">SRMS</span>
+                            <span class="text-[10px] text-blue-200 uppercase tracking-wider">Student Record Management System</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-900/50 px-3 py-1 rounded text-xs font-mono border border-blue-700">
+                            Role: <span id="current-role-display" class="font-bold uppercase text-yellow-300">ADMIN</span>
+                        </div>
+                        <button onclick="auth.logout()" class="text-blue-100 hover:text-white transition-colors text-sm font-medium">
+                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- LEFT SIDEBAR: MENU -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden sticky top-8">
+                    <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
+                        <h2 class="font-bold text-slate-700 text-sm uppercase">Menu Options</h2>
+                    </div>
+                    <div class="p-2 space-y-1" id="menu-container">
+                        <!-- Menus injected via JS based on Role -->
+                    </div>
+                    
+                    <!-- Static Menu Item for Project Info -->
+                    <div class="p-2 border-t border-slate-100">
+                        <button onclick="ui.showSection('info')" class="w-full text-left px-4 py-2 rounded hover:bg-blue-50 text-slate-600 hover:text-blue-700 text-sm font-medium transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info w-5"></i> Project Info
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT CONTENT AREA -->
+            <div class="lg:col-span-3">
+                
+                <!-- 1. VIEW STUDENTS SECTION (Default) -->
+                <div id="sec-view" class="content-sec bg-white rounded-lg shadow border border-slate-200 min-h-[500px] flex flex-col">
+                    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700">Display All Students</h3>
+                        <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500">Total Records: <span id="total-count">0</span></span>
+                    </div>
+                    <div class="overflow-x-auto flex-grow">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase border-b border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-3">Roll No</th>
+                                    <th class="px-6 py-3">Name</th>
+                                    <th class="px-6 py-3 text-center">Branch</th>
+                                    <th class="px-6 py-3 text-center">Marks</th>
+                                    <th class="px-6 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-table-body" class="divide-y divide-slate-100">
+                                <!-- Rows -->
+                            </tbody>
+                        </table>
+                        <div id="empty-state" class="hidden flex flex-col items-center justify-center h-64 text-slate-400">
+                            <i class="fa-solid fa-folder-open text-3xl mb-2 opacity-50"></i>
+                            <p>No student records found in file.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. ADD STUDENT SECTION -->
+                <div id="sec-add" class="content-sec hidden bg-white rounded-lg shadow border border-slate-200">
+                    <div class="px-6 py-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-700">Add New Student</h3>
+                    </div>
+                    <div class="p-8 max-w-lg mx-auto">
+                        <form id="add-form" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Roll Number</label>
+                                    <input type="text" id="add-roll" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Branch</label>
+                                    <input type="text" id="add-branch" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" placeholder="e.g. CSE">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Student Name</label>
+                                <input type="text" id="add-name" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Section</label>
+                                <input type="text" id="add-sec" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" placeholder="e.g. 'O'">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Total Marks</label>
+                                <input type="number" id="add-marks" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                            </div>
+                            <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 rounded shadow mt-4">Save Record</button>
+                        </form>
+                        <div id="add-msg" class="mt-4 hidden p-2 text-center text-xs rounded font-bold"></div>
+                    </div>
+                </div>
+
+                <!-- 3. SEARCH SECTION -->
+                <div id="sec-search" class="content-sec hidden bg-white rounded-lg shadow border border-slate-200">
+                    <div class="px-6 py-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-700">Search Student</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex gap-2 mb-6">
+                            <input type="text" id="search-input" class="flex-grow px-4 py-2 border rounded focus:outline-none focus:border-blue-500" placeholder="Enter Roll Number to Search...">
+                            <button onclick="system.search()" class="bg-slate-800 text-white px-6 py-2 rounded font-medium hover:bg-slate-900">Search</button>
+                        </div>
+                        <div id="search-results" class="hidden border rounded overflow-hidden">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-slate-50 text-slate-500 font-bold text-xs uppercase">
+                                    <tr>
+                                        <th class="px-6 py-3">Roll No</th>
+                                        <th class="px-6 py-3">Name</th>
+                                        <th class="px-6 py-3">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="search-table-body" class="bg-white">
+                                    <!-- Results -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="search-msg" class="hidden text-center text-slate-500 py-8">No records found.</div>
+                    </div>
+                </div>
+
+                <!-- 4. CHANGE PASSWORD SECTION -->
+                <div id="sec-password" class="content-sec hidden bg-white rounded-lg shadow border border-slate-200">
+                    <div class="px-6 py-4 border-b border-slate-200">
+                        <h3 class="font-bold text-slate-700">Change Password</h3>
+                    </div>
+                    <div class="p-8 max-w-md mx-auto">
+                        <form id="pwd-form" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Old Password</label>
+                                <input type="password" id="old-pass" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">New Password</label>
+                                <input type="password" id="new-pass" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                            </div>
+                            <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded shadow mt-2">Update Password</button>
+                        </form>
+                        <div id="pwd-msg" class="mt-4 hidden p-2 text-center text-xs rounded font-bold"></div>
+                    </div>
+                </div>
+
+                <!-- 5. PROJECT INFO SECTION (New) -->
+                <div id="sec-info" class="content-sec hidden bg-white rounded-lg shadow border border-slate-200">
+                    <div class="px-6 py-4 border-b border-slate-200 bg-slate-50">
+                        <h3 class="font-bold text-slate-700">Project Documentation</h3>
+                    </div>
+                    <div class="p-8 space-y-6 overflow-y-auto max-h-[500px]">
+                        <div>
+                            <h4 class="text-blue-700 font-bold text-lg mb-2">Project Overview</h4>
+                            <p class="text-sm text-slate-600 leading-relaxed">
+                                The Student Record Management System (SRMS) is a console-based application conceptualized in C language for managing student academic records efficiently. It allows authorized users (Admin, Staff, Guest) to manage student data using file handling and role-based access control (RBAC).
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                <h4 class="text-blue-800 font-bold text-sm mb-2 uppercase"><i class="fa-solid fa-list-check mr-2"></i> Key Features</h4>
+                                <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
+                                    <li><b>Role-Based Login:</b> Secure access for Admin, Staff, and Guest.</li>
+                                    <li><b>File-Based Storage:</b> Persistent data storage in <code>students.txt</code>.</li>
+                                    <li><b>CRUD Operations:</b> Create, Read, Update, Delete records.</li>
+                                    <li><b>Secure Updates:</b> Uses temporary files for data integrity during updates.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h4 class="text-slate-800 font-bold text-sm mb-2 uppercase"><i class="fa-solid fa-code mr-2"></i> Technologies Used</h4>
+                                <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
+                                    <li><b>Language:</b> C Programming</li>
+                                    <li><b>Concepts:</b> File Handling (fopen, fprintf), Structures, Pointers</li>
+                                    <li><b>Logic:</b> Procedural Programming, Authentication Logic</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-slate-800 font-bold text-sm mb-2 uppercase">System Workflow</h4>
+                            <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded border border-slate-200 font-mono">
+                                1. Login (credentials.txt) -> Validate Role<br>
+                                2. Admin Menu -> Add/Edit/Delete/Search/View<br>
+                                3. Staff Menu -> Add/Edit/Search/View<br>
+                                4. Guest Menu -> Search/View<br>
+                                5. Data Operations -> Modify students.txt
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. EDIT MODAL -->
+                <div id="edit-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
+                        <h3 class="font-bold text-slate-800 mb-4">Update Student Details</h3>
+                        <form id="edit-form" class="space-y-3">
+                            <input type="hidden" id="edit-original-roll">
+                            <div>
+                                <label class="text-xs font-bold text-slate-500">Roll No</label>
+                                <input type="text" id="edit-roll" class="w-full border rounded px-2 py-1 text-sm bg-slate-100" readonly>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-500">Name</label>
+                                <input type="text" id="edit-name" class="w-full border rounded px-2 py-1 text-sm">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-500">Branch</label>
+                                <input type="text" id="edit-branch" class="w-full border rounded px-2 py-1 text-sm">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-500">Marks</label>
+                                <input type="number" id="edit-marks" class="w-full border rounded px-2 py-1 text-sm">
+                            </div>
+                            <div class="flex gap-2 mt-4">
+                                <button type="button" onclick="ui.closeEditModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-1.5 rounded text-sm font-bold">Cancel</button>
+                                <button type="submit" class="flex-1 bg-blue-700 hover:bg-blue-800 text-white py-1.5 rounded text-sm font-bold">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 7. DELETE MODAL -->
+                <div id="delete-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+                        <div class="mb-4">
+                            <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 mb-2">Confirm Deletion</h3>
+                        <p class="text-sm text-slate-500 mb-6">Are you sure you want to permanently delete record <span id="delete-target-roll" class="font-bold"></span>?</p>
+                        <div class="flex gap-3 justify-center">
+                            <button onclick="ui.closeDeleteModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2 rounded text-sm font-bold">Cancel</button>
+                            <button onclick="ui.confirmDeleteAction()" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded text-sm font-bold">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        
+        <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+            <div class="text-center text-xs text-slate-400">
+                &copy; 2025 SRM University AP - Student Record Management System
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ==========================================
+        //  1. AUTHENTICATION
+        // ==========================================
+        class Auth {
+            constructor() {
+                this.currentUser = null;
+                this.role = null;
+                this.credentials = this.loadCredentials();
+            }
+
+            loadCredentials() {
+                const stored = localStorage.getItem('srms_creds');
+                if (stored) return JSON.parse(stored);
+                
+                const defaults = [
+                    { user: 'admin', pass: 'admin123', role: 'admin' },
+                    { user: 'staff', pass: 'staff123', role: 'staff' },
+                    { user: 'guest', pass: 'guest', role: 'guest' }
+                ];
+                localStorage.setItem('srms_creds', JSON.stringify(defaults));
+                return defaults;
+            }
+
+            login(selectedRole, user, pass) {
+                const account = this.credentials.find(c => c.user === user && c.pass === pass);
+                if (account) {
+                    if (account.role === selectedRole) {
+                        this.currentUser = account.user;
+                        this.role = account.role;
+                        return { success: true };
+                    } else {
+                        return { success: false, msg: `User '${user}' does not have ${selectedRole.toUpperCase()} privileges.` };
+                    }
+                }
+                return { success: false, msg: "Invalid Username or Password." };
+            }
+
+            changePassword(oldPass, newPass) {
+                const index = this.credentials.findIndex(c => c.user === this.currentUser);
+                if (index !== -1 && this.credentials[index].pass === oldPass) {
+                    this.credentials[index].pass = newPass;
+                    localStorage.setItem('srms_creds', JSON.stringify(this.credentials));
+                    return true;
+                }
+                return false;
+            }
+
+            logout() {
+                this.currentUser = null;
+                this.role = null;
+                ui.showLogin();
+            }
+        }
+
+        // ==========================================
+        //  2. STUDENT DATA MANAGEMENT
+        // ==========================================
+        class StudentSystem {
+            constructor() {
+                this.students = this.loadStudents();
+            }
+
+            loadStudents() {
+                const stored = localStorage.getItem('srms_students');
+                if (stored) return JSON.parse(stored);
+                return [
+                    { roll: 'AP24110010453', name: 'Pavan Varma', branch: 'CSE', sec: 'O', marks: 95 }
+                ];
+            }
+
+            save() {
+                localStorage.setItem('srms_students', JSON.stringify(this.students));
+            }
+
+            add(roll, name, branch, sec, marks) {
+                if (this.students.some(s => s.roll === roll)) return false; 
+                this.students.push({ roll, name, branch, sec, marks });
+                this.save();
+                return true;
+            }
+
+            delete(roll) {
+                const initialLen = this.students.length;
+                this.students = this.students.filter(s => s.roll !== roll);
+                this.save();
+                return this.students.length < initialLen;
+            }
+
+            update(originalRoll, name, branch, marks) {
+                const student = this.students.find(s => s.roll === originalRoll);
+                if (student) {
+                    student.name = name;
+                    student.branch = branch;
+                    student.marks = marks;
+                    this.save();
+                    return true;
+                }
+                return false;
+            }
+
+            search(query) {
+                query = query.toLowerCase();
+                return this.students.filter(s => 
+                    s.roll.toLowerCase().includes(query) || 
+                    s.name.toLowerCase().includes(query)
+                );
+            }
+        }
+
+        // ==========================================
+        //  3. UI CONTROLLER
+        // ==========================================
+        class UI {
+            constructor() {
+                this.loginSection = document.getElementById('login-section');
+                this.dashboardSection = document.getElementById('dashboard-section');
+                this.menuContainer = document.getElementById('menu-container');
+                this.deleteTarget = null;
+            }
+
+            showLogin() {
+                this.loginSection.classList.remove('hidden');
+                this.dashboardSection.classList.add('hidden');
+                document.getElementById('login-form').reset();
+            }
+
+            showDashboard(role) {
+                this.loginSection.classList.add('hidden');
+                this.dashboardSection.classList.remove('hidden');
+                document.getElementById('current-role-display').textContent = role;
+                this.generateMenu(role);
+                this.showSection('view');
+            }
+
+            generateMenu(role) {
+                let menuHTML = '';
+                const btnClass = "w-full text-left px-4 py-2 rounded hover:bg-blue-50 text-slate-600 hover:text-blue-700 text-sm font-medium transition-colors flex items-center gap-2";
+
+                // Admin: ALL Permissions
+                if (role === 'admin') {
+                    menuHTML += `<button onclick="ui.showSection('add')" class="${btnClass}"><i class="fa-solid fa-user-plus w-5"></i> Add Student</button>`;
+                    menuHTML += `<button onclick="ui.showSection('view')" class="${btnClass}"><i class="fa-solid fa-list w-5"></i> Display Students</button>`;
+                    menuHTML += `<button onclick="ui.showSection('search')" class="${btnClass}"><i class="fa-solid fa-magnifying-glass w-5"></i> Search Student</button>`;
+                    menuHTML += `<button onclick="ui.showSection('password')" class="${btnClass}"><i class="fa-solid fa-key w-5"></i> Change Password</button>`;
+                }
+                // Staff: Add, Display, Search, Update (Removed 'Delete', 'Password' kept as utility)
+                else if (role === 'staff') {
+                    menuHTML += `<button onclick="ui.showSection('add')" class="${btnClass}"><i class="fa-solid fa-user-plus w-5"></i> Add Student</button>`;
+                    menuHTML += `<button onclick="ui.showSection('view')" class="${btnClass}"><i class="fa-solid fa-list w-5"></i> Display Students</button>`;
+                    menuHTML += `<button onclick="ui.showSection('search')" class="${btnClass}"><i class="fa-solid fa-magnifying-glass w-5"></i> Search Student</button>`;
+                }
+                // Guest: Display, Search
+                else if (role === 'guest') {
+                    menuHTML += `<button onclick="ui.showSection('view')" class="${btnClass}"><i class="fa-solid fa-list w-5"></i> Display Students</button>`;
+                    menuHTML += `<button onclick="ui.showSection('search')" class="${btnClass}"><i class="fa-solid fa-magnifying-glass w-5"></i> Search Student</button>`;
+                }
+                this.menuContainer.innerHTML = menuHTML;
+            }
+
+            showSection(secId) {
+                document.querySelectorAll('.content-sec').forEach(el => el.classList.add('hidden'));
+                const sec = document.getElementById(`sec-${secId}`);
+                if(sec) {
+                    sec.classList.remove('hidden');
+                    if (secId === 'view') this.renderTable();
+                }
+            }
+
+            renderTable() {
+                const tbody = document.getElementById('student-table-body');
+                tbody.innerHTML = '';
+                document.getElementById('total-count').textContent = system.students.length;
+
+                if (system.students.length === 0) {
+                    document.getElementById('empty-state').classList.remove('hidden');
+                    return;
+                }
+                document.getElementById('empty-state').classList.add('hidden');
+
+                system.students.forEach(s => {
+                    let actions = '';
+                    // Admin: Edit & Delete
+                    if (auth.role === 'admin') {
+                        actions = `
+                            <button onclick="ui.openEditModal('${s.roll}')" class="text-blue-600 hover:text-blue-800 mx-1" title="Update"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="ui.openDeleteModal('${s.roll}')" class="text-red-600 hover:text-red-800 mx-1" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                        `;
+                    } 
+                    // Staff: Edit Only
+                    else if (auth.role === 'staff') {
+                        actions = `
+                            <button onclick="ui.openEditModal('${s.roll}')" class="text-blue-600 hover:text-blue-800 mx-1" title="Update"><i class="fa-solid fa-pen"></i></button>
+                        `;
+                    }
+                    // Guest: Read Only
+                    else {
+                        actions = '<span class="text-slate-400 text-xs italic">View Only</span>';
+                    }
+
+                    const row = `
+                        <tr class="hover:bg-slate-50 border-b border-slate-50 last:border-none">
+                            <td class="px-6 py-3 font-mono text-xs font-bold text-slate-600">${s.roll}</td>
+                            <td class="px-6 py-3 font-medium text-slate-800">${s.name}</td>
+                            <td class="px-6 py-3 text-center text-xs bg-slate-50">${s.branch} (${s.sec})</td>
+                            <td class="px-6 py-3 text-center font-bold text-slate-700">${s.marks}</td>
+                            <td class="px-6 py-3 text-right">${actions}</td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            openDeleteModal(roll) {
+                this.deleteTarget = roll;
+                document.getElementById('delete-target-roll').textContent = roll;
+                document.getElementById('delete-modal').classList.remove('hidden');
+            }
+
+            closeDeleteModal() {
+                this.deleteTarget = null;
+                document.getElementById('delete-modal').classList.add('hidden');
+            }
+
+            confirmDeleteAction() {
+                if (this.deleteTarget) {
+                    system.delete(this.deleteTarget);
+                    this.renderTable();
+                    this.closeDeleteModal();
+                }
+            }
+
+            openEditModal(roll) {
+                const s = system.students.find(st => st.roll === roll);
+                if (!s) return;
+                document.getElementById('edit-original-roll').value = s.roll;
+                document.getElementById('edit-roll').value = s.roll;
+                document.getElementById('edit-name').value = s.name;
+                document.getElementById('edit-branch').value = s.branch;
+                document.getElementById('edit-marks').value = s.marks;
+                document.getElementById('edit-modal').classList.remove('hidden');
+            }
+
+            closeEditModal() {
+                document.getElementById('edit-modal').classList.add('hidden');
+            }
+
+            renderSearchResults(results) {
+                const tbody = document.getElementById('search-table-body');
+                tbody.innerHTML = '';
+                const msg = document.getElementById('search-msg');
+                const tableContainer = document.getElementById('search-results');
+
+                if (results.length === 0) {
+                    msg.classList.remove('hidden');
+                    tableContainer.classList.add('hidden');
+                } else {
+                    msg.classList.add('hidden');
+                    tableContainer.classList.remove('hidden');
+                    results.forEach(s => {
+                        tbody.insertAdjacentHTML('beforeend', `
+                            <tr class="border-b last:border-none">
+                                <td class="px-6 py-3 font-mono text-xs font-bold">${s.roll}</td>
+                                <td class="px-6 py-3 font-bold">${s.name}</td>
+                                <td class="px-6 py-3 text-xs text-slate-500">Branch: ${s.branch} | Sec: ${s.sec} | Marks: ${s.marks}</td>
+                            </tr>
+                        `);
+                    });
+                }
+            }
+        }
+
+        const auth = new Auth();
+        const system = new StudentSystem();
+        const ui = new UI();
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const role = document.getElementById('login-role').value;
+            const u = document.getElementById('login-user').value.trim();
+            const p = document.getElementById('login-pass').value.trim();
+            const msg = document.getElementById('login-msg');
+            
+            if(!role) {
+                msg.textContent = "Please select a User Role.";
+                msg.classList.remove('hidden');
+                return;
+            }
+
+            const result = auth.login(role, u, p);
+
+            if (result.success) {
+                msg.classList.add('hidden');
+                ui.showDashboard(auth.role);
+            } else {
+                msg.textContent = result.msg;
+                msg.classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('add-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const roll = document.getElementById('add-roll').value;
+            const name = document.getElementById('add-name').value;
+            const branch = document.getElementById('add-branch').value;
+            const sec = document.getElementById('add-sec').value || '-';
+            const marks = document.getElementById('add-marks').value;
+            const msg = document.getElementById('add-msg');
+
+            if (system.add(roll, name, branch, sec, marks)) {
+                msg.textContent = "Record Added Successfully!";
+                msg.className = "mt-4 p-2 text-center text-xs rounded font-bold bg-blue-100 text-blue-700";
+                msg.classList.remove('hidden');
+                e.target.reset();
+            } else {
+                msg.textContent = "Error: Roll Number already exists.";
+                msg.className = "mt-4 p-2 text-center text-xs rounded font-bold bg-red-100 text-red-700";
+                msg.classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('edit-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const roll = document.getElementById('edit-original-roll').value;
+            const name = document.getElementById('edit-name').value;
+            const branch = document.getElementById('edit-branch').value;
+            const marks = document.getElementById('edit-marks').value;
+            
+            system.update(roll, name, branch, marks);
+            ui.closeEditModal();
+            ui.renderTable(); 
+        });
+
+        system.search = () => {
+            const q = document.getElementById('search-input').value.trim();
+            if(!q) return;
+            const results = system.search(q);
+            ui.renderSearchResults(results);
+        }
+
+        document.getElementById('pwd-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const oldP = document.getElementById('old-pass').value;
+            const newP = document.getElementById('new-pass').value;
+            const msg = document.getElementById('pwd-msg');
+
+            if (auth.changePassword(oldP, newP)) {
+                msg.textContent = "Password Changed Successfully!";
+                msg.className = "mt-4 p-2 text-center text-xs rounded font-bold bg-blue-100 text-blue-700";
+                msg.classList.remove('hidden');
+                e.target.reset();
+            } else {
+                msg.textContent = "Error: Old password incorrect.";
+                msg.className = "mt-4 p-2 text-center text-xs rounded font-bold bg-red-100 text-red-700";
+                msg.classList.remove('hidden');
+            }
+        });
+
+    </script>
+</body>
+</html>
