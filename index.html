@@ -34,41 +34,13 @@
         }
     </script>
 
-    <style>
-        body { 
-            background-color: #f3f4f6;
-            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .hidden { display: none !important; }
-        
-        /* Animations */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .animate-fade { animation: fadeIn 0.3s ease-out; }
-
-        .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
-    </style>
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col font-sans overflow-hidden">
 
     <!-- ================= LOGIN SCREEN ================= -->
     <div id="login-section" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-brand-900 via-slate-900 to-black animate-fade">
-        <!-- Decorative blobs -->
         <div class="absolute top-0 left-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
 
@@ -409,7 +381,7 @@
                 <!-- 5. PROJECT INFO -->
                 <div id="sec-info" class="content-sec hidden animate-slide-up max-w-4xl mx-auto">
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="h-32 bg-gradient-to-r from-brand-900 to-brand-700 relative flex items-center px-8">
+                        <div class="h-32 bg-gradient-to-r from-brand-900 to-brand-700 relative flex itemscenter px-8">
                             <div class="absolute right-0 bottom-0 opacity-10 text-9xl text-white transform translate-y-4">
                                 <i class="fa-brands fa-cuttlefish"></i>
                             </div>
@@ -487,6 +459,102 @@
                     </div>
                 </div>
 
+                <!-- 7. NEW SCAN SECTION (Admin/Staff Only) -->
+                <div id="sec-scan" class="content-sec hidden animate-slide-up max-w-3xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+                            <h2 class="text-xl font-bold text-slate-800">Scan Student Record</h2>
+                            <p class="text-slate-500 text-sm mt-1">AI-Powered Data Extraction</p>
+                        </div>
+                        
+                        <div class="p-8">
+                            <!-- Upload Area -->
+                            <div class="group relative w-full h-48 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50 flex flex-col items-center justify-center cursor-pointer hover:border-brand-500 hover:bg-brand-50 transition-all" onclick="document.getElementById('file-upload').click()">
+                                <input type="file" id="file-upload" class="hidden" accept="image/*" onchange="ui.handleFileUpload(this)">
+                                <div id="upload-prompt" class="text-center">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 group-hover:bg-brand-100 text-slate-400 group-hover:text-brand-500 flex items-center justify-center mx-auto mb-3 transition-colors">
+                                        <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                                    </div>
+                                    <p class="text-sm font-bold text-slate-600 group-hover:text-brand-700">Click to upload screenshot</p>
+                                    <p class="text-xs text-slate-400 mt-1">Supports PNG, JPG (Max 5MB)</p>
+                                </div>
+                                <img id="preview-img" class="hidden absolute inset-0 w-full h-full object-contain p-2 rounded-xl" />
+                                
+                                <!-- Scan Animation Overlay -->
+                                <div id="scan-overlay" class="hidden absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center overflow-hidden">
+                                    <div class="scan-line"></div>
+                                    <span class="bg-black/70 text-white px-3 py-1 rounded text-xs font-mono">SCANNING...</span>
+                                </div>
+                            </div>
+
+                            <!-- Extracted Data Form -->
+                            <div id="scan-result" class="hidden mt-8 animate-slide-up">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center gap-2 text-emerald-600 text-sm font-bold">
+                                        <i class="fa-solid fa-check-circle"></i>
+                                        <span>Extraction Complete</span>
+                                    </div>
+                                    <span class="text-xs text-slate-400">Confidence: 98%</span>
+                                </div>
+
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-6">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-400 uppercase">Roll No</label>
+                                            <input type="text" id="scan-roll" class="w-full bg-transparent border-b border-slate-200 font-mono font-bold text-slate-700 focus:outline-none" readonly>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-400 uppercase">Name</label>
+                                            <input type="text" id="scan-name" class="w-full bg-transparent border-b border-slate-200 font-bold text-slate-700 focus:outline-none" readonly>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-400 uppercase">Branch & Sec</label>
+                                            <div class="flex gap-2">
+                                                <input type="text" id="scan-branch" class="w-1/2 bg-transparent border-b border-slate-200 font-bold text-slate-700 focus:outline-none" readonly>
+                                                <input type="text" id="scan-sec" class="w-1/2 bg-transparent border-b border-slate-200 font-bold text-slate-700 focus:outline-none" readonly>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-400 uppercase">Calculated Grade</label>
+                                            <input type="text" id="scan-grade" class="w-full bg-transparent border-b border-slate-200 font-bold text-brand-600 focus:outline-none" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-6">
+                                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Subject Breakdown</h4>
+                                    <div class="border rounded-xl overflow-hidden">
+                                        <table class="w-full text-sm">
+                                            <thead class="bg-slate-100 text-xs uppercase text-slate-500">
+                                                <tr>
+                                                    <th class="px-4 py-2 text-left">Subject</th>
+                                                    <th class="px-4 py-2 text-right">Marks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="scan-subjects-body" class="divide-y divide-slate-100 bg-white">
+                                                <!-- Dynamic Rows -->
+                                            </tbody>
+                                            <tfoot class="bg-slate-50 font-bold text-slate-700">
+                                                <tr>
+                                                    <td class="px-4 py-2 text-right uppercase text-xs">Average / Total</td>
+                                                    <td class="px-4 py-2 text-right text-brand-600" id="scan-total-marks">0</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <input type="hidden" id="scan-final-marks">
+
+                                <div class="flex gap-3">
+                                    <button type="button" onclick="ui.resetScan()" class="flex-1 bg-white border border-slate-200 text-slate-600 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors">Discard</button>
+                                    <button type="button" onclick="ui.saveScannedData()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg text-sm font-bold shadow-lg shadow-emerald-500/20 transition-colors">Save Record</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 7. EDIT MODAL -->
                 <div id="edit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
                     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm animate-fade"></div>
@@ -538,525 +606,7 @@
         </div>
     </div>
 
-    <!-- JS Logic remains identical but connected to new UI classes -->
-    <script>
-        // ==========================================
-        //  GLOBAL UTILS & RESET
-        // ==========================================
-        
-        window.hardReset = () => {
-            if(confirm("Factory Reset: This will clear all data. Continue?")) {
-                localStorage.clear();
-                window.location.reload();
-            }
-        };
-
-        // ==========================================
-        //  0. LOGGER
-        // ==========================================
-        class Logger {
-            constructor() {
-                this.logs = JSON.parse(localStorage.getItem('srms_logs')) || [];
-            }
-            
-            log(action, user, detail) {
-                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
-                const entry = { time: timestamp, user: user ? user.toUpperCase() : 'SYSTEM', action, detail };
-                this.logs.unshift(entry);
-                if(this.logs.length > 50) this.logs.pop();
-                localStorage.setItem('srms_logs', JSON.stringify(this.logs));
-            }
-
-            getLogs() { return this.logs; }
-
-            clear() {
-                this.logs = [];
-                localStorage.setItem('srms_logs', JSON.stringify([]));
-                ui.renderLogs();
-            }
-        }
-
-        // ==========================================
-        //  1. AUTHENTICATION
-        // ==========================================
-        class Auth {
-            constructor() {
-                this.currentUser = null;
-                this.role = null;
-                this.credentials = this.loadCredentials();
-            }
-
-            loadCredentials() {
-                try {
-                    const stored = localStorage.getItem('srms_creds');
-                    if (stored) return JSON.parse(stored);
-                } catch (e) { console.error("Creds corrupted"); }
-                
-                const defaults = [
-                    { user: 'admin', pass: 'admin123', role: 'admin' },
-                    { user: 'staff', pass: 'staff123', role: 'staff' },
-                    { user: 'guest', pass: 'guest', role: 'guest' }
-                ];
-                localStorage.setItem('srms_creds', JSON.stringify(defaults));
-                return defaults;
-            }
-
-            login(selectedRole, user, pass) {
-                const account = this.credentials.find(c => c.user === user && c.pass === pass);
-                if (account) {
-                    if (account.role === selectedRole) {
-                        this.currentUser = account.user;
-                        this.role = account.role;
-                        logger.log("LOGIN", this.currentUser, "Access granted.");
-                        return { success: true };
-                    } else {
-                        return { success: false, msg: `User '${user}' is a ${account.role.toUpperCase()}.` };
-                    }
-                }
-                return { success: false, msg: "Invalid Username or Password." };
-            }
-
-            changePassword(oldPass, newPass) {
-                const index = this.credentials.findIndex(c => c.user === this.currentUser);
-                if (index !== -1 && this.credentials[index].pass === oldPass) {
-                    this.credentials[index].pass = newPass;
-                    localStorage.setItem('srms_creds', JSON.stringify(this.credentials));
-                    logger.log("SECURITY", this.currentUser, "Password updated.");
-                    return true;
-                }
-                return false;
-            }
-
-            logout() {
-                logger.log("LOGOUT", this.currentUser, "Session ended.");
-                this.currentUser = null;
-                this.role = null;
-                ui.showLogin();
-            }
-        }
-
-        // ==========================================
-        //  2. STUDENT DATA MANAGEMENT
-        // ==========================================
-        class StudentSystem {
-            constructor() {
-                this.students = this.loadStudents();
-            }
-
-            loadStudents() {
-                try {
-                    const stored = localStorage.getItem('srms_students');
-                    if (stored) {
-                        let data = JSON.parse(stored);
-                        if(data.length > 0 && data[0].marks === undefined) throw new Error();
-                        return data;
-                    }
-                } catch (e) {}
-                
-                const defaults = [
-                    { roll: 'AP24110010453', name: 'Pavan Varma', branch: 'CSE', sec: 'O', marks: 95 },
-                    { roll: 'AP24110010400', name: 'Rahul Sharma', branch: 'ECE', sec: 'A', marks: 82 }
-                ];
-                localStorage.setItem('srms_students', JSON.stringify(defaults));
-                return defaults;
-            }
-
-            save() {
-                localStorage.setItem('srms_students', JSON.stringify(this.students));
-                ui.updateStats();
-            }
-
-            add(roll, name, branch, sec, marks) {
-                if (this.students.some(s => s.roll === roll)) return false; 
-                this.students.push({ roll, name, branch, sec, marks: parseInt(marks) });
-                this.save();
-                logger.log("CREATE", auth.currentUser, `New Record: ${roll}`);
-                return true;
-            }
-
-            delete(roll) {
-                const initialLen = this.students.length;
-                this.students = this.students.filter(s => s.roll !== roll);
-                this.save();
-                logger.log("DELETE", auth.currentUser, `Removed: ${roll}`);
-                return this.students.length < initialLen;
-            }
-
-            update(originalRoll, name, branch, marks) {
-                const student = this.students.find(s => s.roll === originalRoll);
-                if (student) {
-                    student.name = name;
-                    student.branch = branch;
-                    student.marks = parseInt(marks);
-                    this.save();
-                    logger.log("UPDATE", auth.currentUser, `Modified: ${originalRoll}`);
-                    return true;
-                }
-                return false;
-            }
-
-            search(query) {
-                query = query.toLowerCase();
-                return this.students.filter(s => 
-                    s.roll.toLowerCase().includes(query) || 
-                    s.name.toLowerCase().includes(query)
-                );
-            }
-
-            calculateGrade(marks) {
-                if (marks >= 90) return 'O';
-                if (marks >= 80) return 'A+';
-                if (marks >= 70) return 'A';
-                if (marks >= 60) return 'B+';
-                if (marks >= 50) return 'B';
-                return 'F';
-            }
-
-            exportData() {
-                let csvContent = "data:text/csv;charset=utf-8,Roll Number,Name,Branch,Section,Marks,Grade\n";
-                this.students.forEach(s => {
-                    csvContent += `${s.roll},${s.name},${s.branch},${s.sec},${s.marks},${this.calculateGrade(s.marks)}\n`;
-                });
-                const link = document.createElement("a");
-                link.setAttribute("href", encodeURI(csvContent));
-                link.setAttribute("download", "student_records.csv");
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                logger.log("EXPORT", auth.currentUser, "Data exported to CSV.");
-            }
-        }
-
-        // ==========================================
-        //  3. UI CONTROLLER
-        // ==========================================
-        class UI {
-            constructor() {
-                this.loginSection = document.getElementById('login-section');
-                this.dashboardSection = document.getElementById('dashboard-section');
-                this.menuContainer = document.getElementById('menu-container');
-                this.deleteTarget = null;
-            }
-
-            showLogin() {
-                this.loginSection.classList.remove('hidden');
-                this.dashboardSection.classList.add('hidden');
-                document.getElementById('login-form').reset();
-                document.getElementById('login-msg').classList.add('hidden');
-            }
-
-            showDashboard(role) {
-                this.loginSection.classList.add('hidden');
-                this.dashboardSection.classList.remove('hidden');
-                document.getElementById('current-role-display').textContent = role;
-                this.generateMenu(role);
-                
-                if(role === 'guest') this.showSection('view');
-                else this.showSection('dashboard');
-                
-                this.updateStats();
-            }
-
-            generateMenu(role) {
-                let menuHTML = '';
-                const baseClass = "w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white text-sm font-medium transition-all flex items-center gap-3 group";
-                const iconBase = "w-5 text-slate-500 group-hover:text-brand-400 transition-colors";
-
-                if (role === 'admin') {
-                    menuHTML += `<button onclick="ui.showSection('dashboard')" class="${baseClass}"><i class="fa-solid fa-gauge-high ${iconBase}"></i> Dashboard</button>`;
-                    menuHTML += `<button onclick="ui.showSection('add')" class="${baseClass}"><i class="fa-solid fa-user-plus ${iconBase}"></i> Add Student</button>`;
-                    menuHTML += `<button onclick="ui.showSection('view')" class="${baseClass}"><i class="fa-solid fa-list-check ${iconBase}"></i> Records</button>`;
-                    menuHTML += `<button onclick="ui.showSection('search')" class="${baseClass}"><i class="fa-solid fa-magnifying-glass ${iconBase}"></i> Search</button>`;
-                    menuHTML += `<button onclick="ui.showSection('password')" class="${baseClass}"><i class="fa-solid fa-key ${iconBase}"></i> Security</button>`;
-                }
-                else if (role === 'staff') {
-                    menuHTML += `<button onclick="ui.showSection('dashboard')" class="${baseClass}"><i class="fa-solid fa-gauge-high ${iconBase}"></i> Dashboard</button>`;
-                    menuHTML += `<button onclick="ui.showSection('add')" class="${baseClass}"><i class="fa-solid fa-user-plus ${iconBase}"></i> Add Student</button>`;
-                    menuHTML += `<button onclick="ui.showSection('view')" class="${baseClass}"><i class="fa-solid fa-list-check ${iconBase}"></i> Records</button>`;
-                    menuHTML += `<button onclick="ui.showSection('search')" class="${baseClass}"><i class="fa-solid fa-magnifying-glass ${iconBase}"></i> Search</button>`;
-                }
-                else if (role === 'guest') {
-                    menuHTML += `<button onclick="ui.showSection('view')" class="${baseClass}"><i class="fa-solid fa-list-check ${iconBase}"></i> Records</button>`;
-                    menuHTML += `<button onclick="ui.showSection('search')" class="${baseClass}"><i class="fa-solid fa-magnifying-glass ${iconBase}"></i> Search</button>`;
-                }
-                this.menuContainer.innerHTML = menuHTML;
-            }
-
-            showSection(secId) {
-                document.querySelectorAll('.content-sec').forEach(el => el.classList.add('hidden'));
-                const sec = document.getElementById(`sec-${secId}`);
-                if(sec) {
-                    sec.classList.remove('hidden');
-                    if (secId === 'view') this.renderTable();
-                    if (secId === 'logs') this.renderLogs();
-                }
-            }
-
-            updateStats() {
-                const students = system.students;
-                const total = students.length;
-                let totalMarks = 0;
-                let passCount = 0;
-                let topStudent = null;
-
-                students.forEach(s => {
-                    const m = s.marks || 0;
-                    totalMarks += m;
-                    if(m >= 50) passCount++;
-                    if(!topStudent || m > topStudent.marks) topStudent = s;
-                });
-
-                document.getElementById('stat-total-students').textContent = total;
-                document.getElementById('stat-avg-marks').textContent = total > 0 ? (totalMarks / total).toFixed(1) : 0;
-                document.getElementById('stat-pass-perc').textContent = total > 0 ? ((passCount / total) * 100).toFixed(0) + '%' : '0%';
-
-                const topCard = document.getElementById('top-performer-card');
-                if(topStudent) {
-                    topCard.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 font-bold border border-yellow-200 text-lg shadow-sm">
-                                ${topStudent.name.charAt(0)}
-                            </div>
-                            <div>
-                                <p class="font-bold text-slate-800 text-base">${topStudent.name}</p>
-                                <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium">${topStudent.branch}</span>
-                                    <span class="text-xs font-bold text-brand-600">${topStudent.marks} Marks</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    topCard.innerHTML = '<p class="text-slate-400 italic text-sm">Not enough data available.</p>';
-                }
-            }
-
-            renderLogs() {
-                const container = document.getElementById('log-container');
-                const logs = logger.getLogs();
-                if(logs.length === 0) {
-                    container.innerHTML = '<p class="text-slate-600 italic text-center py-4">Terminal is empty.</p>';
-                    return;
-                }
-                container.innerHTML = logs.map(l => `
-                    <div class="flex gap-3 text-slate-400 font-mono hover:text-slate-200 transition-colors py-0.5 border-b border-slate-800/50">
-                        <span class="text-slate-600 w-20 shrink-0">${l.time}</span>
-                        <span class="text-brand-400 w-16 shrink-0 font-bold">[${l.user}]</span>
-                        <span class="text-emerald-400 w-20 shrink-0 font-bold">${l.action}</span>
-                        <span>${l.detail}</span>
-                    </div>
-                `).join('');
-            }
-
-            renderTable() {
-                const tbody = document.getElementById('student-table-body');
-                tbody.innerHTML = '';
-                
-                if (system.students.length === 0) {
-                    document.getElementById('empty-state').classList.remove('hidden');
-                    return;
-                }
-                document.getElementById('empty-state').classList.add('hidden');
-
-                system.students.forEach(s => {
-                    let actions = '';
-                    const grade = system.calculateGrade(s.marks);
-                    
-                    let gradeColor = 'bg-slate-100 text-slate-600';
-                    if (grade === 'O') gradeColor = 'bg-emerald-100 text-emerald-700 border border-emerald-200';
-                    else if (grade === 'A+' || grade === 'A') gradeColor = 'bg-blue-100 text-blue-700 border border-blue-200';
-                    else if (grade === 'F') gradeColor = 'bg-red-100 text-red-700 border border-red-200';
-                    else gradeColor = 'bg-yellow-50 text-yellow-700 border border-yellow-200';
-
-                    let gradeBadge = `<span class="px-2.5 py-1 rounded-md text-xs font-bold ${gradeColor}">${grade}</span>`;
-
-                    if (auth.role === 'admin') {
-                        actions = `
-                            <button onclick="ui.openEditModal('${s.roll}')" class="text-blue-600 hover:text-blue-800 mx-1 p-2 hover:bg-blue-50 rounded-lg transition-all" title="Update"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="ui.openDeleteModal('${s.roll}')" class="text-red-500 hover:text-red-700 mx-1 p-2 hover:bg-red-50 rounded-lg transition-all" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
-                        `;
-                    } 
-                    else if (auth.role === 'staff') {
-                        actions = `
-                            <button onclick="ui.openEditModal('${s.roll}')" class="text-blue-600 hover:text-blue-800 mx-1 p-2 hover:bg-blue-50 rounded-lg transition-all" title="Update"><i class="fa-solid fa-pen"></i></button>
-                        `;
-                    }
-                    else {
-                        actions = '<span class="text-slate-400 text-xs italic bg-slate-50 px-2 py-1 rounded">Read Only</span>';
-                    }
-
-                    const row = `
-                        <tr class="hover:bg-slate-50 border-b border-slate-50 last:border-none transition-colors group">
-                            <td class="px-6 py-4 font-mono text-xs font-bold text-slate-500 group-hover:text-brand-600 transition-colors">${s.roll}</td>
-                            <td class="px-6 py-4 font-bold text-slate-700">${s.name}</td>
-                            <td class="px-6 py-4 text-center text-xs text-slate-500">${s.branch} (${s.sec})</td>
-                            <td class="px-6 py-4 text-center font-bold text-slate-700 font-mono">${s.marks}</td>
-                            <td class="px-6 py-4 text-center">${gradeBadge}</td>
-                            <td class="px-6 py-4 text-right">${actions}</td>
-                        </tr>
-                    `;
-                    tbody.insertAdjacentHTML('beforeend', row);
-                });
-            }
-
-            openDeleteModal(roll) {
-                this.deleteTarget = roll;
-                document.getElementById('delete-target-roll').textContent = roll;
-                document.getElementById('delete-modal').classList.remove('hidden');
-            }
-
-            closeDeleteModal() {
-                this.deleteTarget = null;
-                document.getElementById('delete-modal').classList.add('hidden');
-            }
-
-            confirmDeleteAction() {
-                if (this.deleteTarget) {
-                    system.delete(this.deleteTarget);
-                    this.renderTable();
-                    this.closeDeleteModal();
-                }
-            }
-
-            openEditModal(roll) {
-                const s = system.students.find(st => st.roll === roll);
-                if (!s) return;
-                document.getElementById('edit-original-roll').value = s.roll;
-                document.getElementById('edit-roll').value = s.roll;
-                document.getElementById('edit-name').value = s.name;
-                document.getElementById('edit-branch').value = s.branch;
-                document.getElementById('edit-marks').value = s.marks;
-                document.getElementById('edit-modal').classList.remove('hidden');
-            }
-
-            closeEditModal() {
-                document.getElementById('edit-modal').classList.add('hidden');
-            }
-
-            renderSearchResults(results) {
-                const tbody = document.getElementById('search-table-body');
-                tbody.innerHTML = '';
-                const msg = document.getElementById('search-msg');
-                const tableContainer = document.getElementById('search-results');
-
-                if (results.length === 0) {
-                    msg.classList.remove('hidden');
-                    tableContainer.classList.add('hidden');
-                } else {
-                    msg.classList.add('hidden');
-                    tableContainer.classList.remove('hidden');
-                    results.forEach(s => {
-                        const grade = system.calculateGrade(s.marks);
-                        tbody.insertAdjacentHTML('beforeend', `
-                            <tr class="border-b last:border-none hover:bg-slate-50">
-                                <td class="px-6 py-4 font-mono text-xs font-bold text-slate-500">${s.roll}</td>
-                                <td class="px-6 py-4 font-bold text-slate-800">${s.name}</td>
-                                <td class="px-6 py-4 text-sm text-slate-500">
-                                    <div class="flex flex-col">
-                                        <span class="font-bold text-slate-700">${s.branch} - Sec ${s.sec}</span>
-                                        <span class="text-xs">Marks: ${s.marks} (Grade: ${grade})</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        `);
-                    });
-                }
-            }
-        }
-
-        // ==========================================
-        //  INIT
-        // ==========================================
-        const logger = new Logger();
-        const auth = new Auth();
-        const system = new StudentSystem();
-        const ui = new UI();
-
-        // Event Listeners
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const role = document.getElementById('login-role').value;
-            const u = document.getElementById('login-user').value.trim();
-            const p = document.getElementById('login-pass').value.trim();
-            const msg = document.getElementById('login-msg');
-            const msgText = document.getElementById('login-msg-text');
-            
-            if(!role) {
-                msgText.textContent = "Please select a User Role.";
-                msg.classList.remove('hidden');
-                return;
-            }
-
-            const result = auth.login(role, u, p);
-
-            if (result.success) {
-                msg.classList.add('hidden');
-                ui.showDashboard(auth.role);
-            } else {
-                msgText.textContent = result.msg;
-                msg.classList.remove('hidden');
-            }
-        });
-
-        document.getElementById('add-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const roll = document.getElementById('add-roll').value;
-            const name = document.getElementById('add-name').value;
-            const branch = document.getElementById('add-branch').value;
-            const sec = document.getElementById('add-sec').value || '-';
-            const marks = document.getElementById('add-marks').value;
-            const msg = document.getElementById('add-msg');
-
-            if (system.add(roll, name, branch, sec, marks)) {
-                msg.textContent = "Success! Record added to database.";
-                msg.className = "mt-6 p-4 text-center text-sm font-medium rounded-xl border bg-emerald-50 text-emerald-600 border-emerald-100";
-                msg.classList.remove('hidden');
-                e.target.reset();
-                setTimeout(() => msg.classList.add('hidden'), 3000);
-            } else {
-                msg.textContent = "Error: Roll Number already exists.";
-                msg.className = "mt-6 p-4 text-center text-sm font-medium rounded-xl border bg-red-50 text-red-600 border-red-100";
-                msg.classList.remove('hidden');
-            }
-        });
-
-        document.getElementById('edit-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const roll = document.getElementById('edit-original-roll').value;
-            const name = document.getElementById('edit-name').value;
-            const branch = document.getElementById('edit-branch').value;
-            const marks = document.getElementById('edit-marks').value;
-            
-            system.update(roll, name, branch, marks);
-            ui.closeEditModal();
-            ui.renderTable(); 
-        });
-
-        system.search = () => {
-            const q = document.getElementById('search-input').value.trim();
-            if(!q) return;
-            const results = system.search(q);
-            ui.renderSearchResults(results);
-        }
-
-        document.getElementById('pwd-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const oldP = document.getElementById('old-pass').value;
-            const newP = document.getElementById('new-pass').value;
-            const msg = document.getElementById('pwd-msg');
-
-            if (auth.changePassword(oldP, newP)) {
-                msg.textContent = "Password updated successfully.";
-                msg.className = "mt-6 p-4 text-center text-sm font-medium rounded-xl border bg-emerald-50 text-emerald-600 border-emerald-100";
-                msg.classList.remove('hidden');
-                e.target.reset();
-            } else {
-                msg.textContent = "Authentication Failed: Old password incorrect.";
-                msg.className = "mt-6 p-4 text-center text-sm font-medium rounded-xl border bg-red-50 text-red-600 border-red-100";
-                msg.classList.remove('hidden');
-            }
-        });
-
-    </script>
+    <!-- External JS -->
+    <script src="script.js"></script>
 </body>
 </html>
