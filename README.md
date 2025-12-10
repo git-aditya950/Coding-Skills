@@ -1,54 +1,111 @@
 # Student Record Management System (SRMS)
 
-A comprehensive Student Record Management System with both console-based C++ implementation and web-based interface.
+A modern, browser-based **Student Record Management System** that simulates a real-world academic records portal.  
+It supports role-based access, secure login, student record management, analytics, and CSV export — all powered by **HTML, CSS, and JavaScript (ES6+)** using `localStorage` for persistence.
 
-## Features
+> Repository: `Coding-Skills` – SRMS Web Application
 
-- **Role-Based Access Control**: Admin, Staff, and Guest roles with different permissions
-- **CRUD Operations**: Create, Read, Update, and Delete student records
-- **Search Functionality**: Search students by Roll Number or Name
-- **Data Export**: Export records to CSV format
-- **Persistent Storage**: LocalStorage for web version
-- **Analytics Dashboard**: View statistics like total students, average marks, and pass rate
+---
 
-## Technologies Used
+## 🚀 Features
 
-### Web Version
-- HTML5
-- CSS3 (Tailwind CSS)
-- JavaScript (ES6+)
-- LocalStorage API
+### 🔐 Authentication & Roles
+- **Role-Based Access Control (RBAC)**:
+  - **Admin** – full access (manage users & records, reset system)
+  - **Staff** – manage student records
+  - **Guest** – view-only / limited actions
+- Built-in **demo credentials** for quick testing:
+  - `admin / admin123`
+  - `staff / staff123`
+  - `guest / guest`
 
-### C++ Version
-- C++ with Singly Linked List
-- File I/O Operations
-- Dynamic Memory Management
+### 📚 Student Record Management
+- **Add New Record**  
+  Store roll number, name, branch, section, and marks.
+- **View All Records**  
+  Tabular view of registered students.
+- **Search Records**  
+  Search by **Roll Number** or **Name**.
+- **Edit & Update**  
+  Modify existing student details.
+- **Delete Records**  
+  Remove records with confirmation dialog.
 
-## Getting Started
+### 📊 Dashboard & Analytics
+- **Dashboard Overview**:
+  - Total number of students
+  - Average marks
+  - Pass percentage
+- **Automatic Grade Calculation**:
+  - Grade is calculated from marks (`O`, `A+`, `A`, `B+`, `B`, `F`).
 
-### Web Version
-1. Open `index.html` in a web browser
-2. Login with default credentials:
-   - Admin: `admin/admin123`
-   - Staff: `staff/staff123`
-   - Guest: `guest/guest`
+### 📤 Data Export & System Utilities
+- **Export to CSV**  
+  Download all student records as a `.csv` file.
+- **System Logs**  
+  Every important action (login, create, update, delete, export, logout) is stored using a custom `Logger` class.
+- **Factory Reset**  
+  One-click **Hard Reset** to clear all `localStorage` data and reload the app.
 
-### C++ Version
-1. Compile: `g++ project.cpp -o student_report.exe`
-2. Run: `.\student_report.exe`
+### 🤖 AI Scan (UI Simulation)
+- **Scan Student Record (AI-Powered Data Extraction – UI concept)**:
+  - Upload a screenshot of a mark sheet (UI simulation).
+  - Shows a mock “Scanning…” and “Extraction Complete” flow.
+  - Designed to demonstrate how AI-based extraction could fit into SRMS.
 
-## Project Structure
+---
 
-```
-├── index.html          # Web-based SRMS interface
-├── project.cpp         # C++ console application
-└── README.md          # Project documentation
-```
+## 🧠 Data Structures & Core Logic
 
-## Author
+The project focuses on **clean JavaScript logic and basic DSA concepts**:
 
-Aditya
+- **Arrays of Objects**
+  - Student records are stored as an array of student objects:
+    ```js
+    { roll, name, branch, sec, marks }
+    ```
+  - Operations like add, update, delete, search work directly on this array.
 
-## License
+- **Searching**
+  - Search uses `Array.prototype.filter` to perform **linear search** on roll number and name.
 
-This project is open source and available for educational purposes.
+- **Logging System**
+  - Logs are stored as an array of log objects:
+    ```js
+    { time, user, action, detail }
+    ```
+  - New logs are added to the **front** of the array using `unshift` (recent logs on top).
+
+- **Local Storage Persistence**
+  - `localStorage` is used to persist:
+    - Credentials
+    - Student records
+    - System logs
+
+- **Grade Calculation Logic**
+  - A simple function maps marks to grade using conditional checks.
+
+This makes it a good project to demonstrate **DSA usage, OOP in JS, and state management in the browser** for viva / interviews.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**
+  - HTML5
+  - Tailwind-based utility classes + custom CSS (`styles.css`)
+  - Vanilla JavaScript (ES6+ classes & modules in a single `script.js`)
+
+- **Storage**
+  - Browser `localStorage` (no backend required)
+
+---
+
+## 📁 Project Structure
+
+```bash
+Coding-Skills/
+├── index.html      # Main SRMS UI (login, dashboard, forms, tables, scanner section)
+├── script.js       # Core logic: Auth, Logger, StudentSystem, UI handlers
+├── styles.css      # Background, glassmorphism, animations, hover effects
+└── README.md       # Project documentation
